@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/member_name"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Name" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/member_attendance_stat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Attendance" />
+
+        <Button
+            android:id="@+id/member_com_stat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="Competition" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/member_remove"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_weight="0"
+        android:background="@android:color/holo_red_dark"
+        android:text="-"
+        android:textColor="@android:color/white"
+        android:textSize="30sp" />
+
+</LinearLayout>
