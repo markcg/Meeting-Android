@@ -82,7 +82,7 @@ public class MeetingDetail extends Fragment {
         end.setText(meeting.getEnd());
 
         ListView list = (ListView) v.findViewById(R.id.meeting_team_list);
-        MeetingTeamListAdapter adapter = new MeetingTeamListAdapter(getActivity(), meeting.getTeams());
+        MeetingTeamListAdapter adapter = new MeetingTeamListAdapter(getActivity(), meeting.getTeams(), meetingId);
         list.setAdapter(adapter);
 
         Button button = (Button) v.findViewById(R.id.meeting_invite);

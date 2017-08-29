@@ -68,4 +68,8 @@ public class Meeting {
     public void addTeam(Team team) {
         this.teams.add(team);
     }
+
+    public void removeTeam(int position) {
+        this.teams.remove(position);
+    }
 }
