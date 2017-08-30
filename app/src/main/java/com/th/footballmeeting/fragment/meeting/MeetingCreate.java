@@ -1,6 +1,8 @@
 package com.th.footballmeeting.fragment.meeting;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +21,8 @@ import com.th.footballmeeting.fragment.MeetingFragment;
 import com.th.footballmeeting.fragment.team_management.TeamManagementTeamDetail;
 import com.th.footballmeeting.fragment.team_management.TeamManagementTeamInvite;
 import com.th.footballmeeting.model.Meeting;
+
+import java.util.regex.Pattern;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,6 +77,7 @@ public class MeetingCreate extends Fragment {
         View v = inflater.inflate(R.layout.fragment_meeting_create, container, false);
         final MainActivity activity =  (MainActivity) getActivity();
         final EditText name = (EditText) v.findViewById(R.id.meeting_name_input);
+        final EditText desc = (EditText) v.findViewById(R.id.meeting_desc_input);
         final EditText date = (EditText) v.findViewById(R.id.meeting_date);
         final EditText start = (EditText) v.findViewById(R.id.meeting_time_start);
         final EditText end = (EditText) v.findViewById(R.id.meeting_time_end);
@@ -80,6 +85,50 @@ public class MeetingCreate extends Fragment {
         Button confirm = (Button) v.findViewById(R.id.create_meeting_done);
         confirm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                String nameText = name.getText().toString();
+                String descText = desc.getText().toString();
+                String dateText = date.getText().toString();
+                String startText = start.getText().toString();
+                String endText = end.getText().toString();
+                if(isEmapty(nameText) || isEmapty(descText) || isEmapty(startText) || isEmapty(endText)){
+                    alertValidation("Please fill in all required text field");
+                    return;
+                }
+
+                if (!isValidText(nameText)) {
+                    alertValidation("“Meeting name is incorrect format.\n" +
+                            "Please use only a-z, A-Z and 0-9");
+                    return;
+                }
+
+                if (!isTextShorterThan(nameText, 4)) {
+                    alertValidation("Please input 4 characters or more");
+                    return;
+                }
+
+                if (!isValidText(descText)) {
+                    alertValidation("“Meeting description is incorrect format.\n" +
+                            "Please use only a-z, A-Z and 0-9");
+                    return;
+                }
+
+                if (!isTextShorterThan(descText, 10)) {
+                    alertValidation("Please input 10 characters or more");
+                    return;
+                }
+
+                if (!isValidTime(startText)) {
+                    alertValidation("Start is incorrect format.\n" +
+                            "Please use inly 0-9 in HH:MM format");
+                    return;
+                }
+
+                if (!isValidTime(endText)) {
+                    alertValidation("End is incorrect format.\n" +
+                            "Please use inly 0-9 in HH:MM format");
+                    return;
+                }
+
                 Meeting meeting = new Meeting(name.getText().toString(), date.getText().toString(), start.getText().toString(), end.getText().toString());
                 activity.addMeeting(meeting);
                 activity.addChildFragment(MeetingList.newInstance());
@@ -132,5 +181,44 @@ public class MeetingCreate extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    /* Validation */
+    public void alertValidation(String message) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        alert.setTitle("Alert");
+        alert.setMessage(message);
+        alert.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alert.show();
+    }
+
+    public boolean isValidText(String name) {
+        Pattern p = Pattern.compile("[A-Za-z0-9]");
+        if (p.matcher(name).find()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isValidTime(String name) {
+        Pattern p = Pattern.compile("[0-9][0-9]\\:[0-9]?[0-9]");
+        if (p.matcher(name).find()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isTextShorterThan(String text, int length) {
+        return text.length() >= length;
+    }
+
+    public boolean isEmapty(String text) {
+        return text.equals("");
     }
 }

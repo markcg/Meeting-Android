@@ -60,6 +60,7 @@ public class TeamInviteListAdapter extends BaseAdapter {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 ((MainActivity)inflater.getContext()).addMeetingTeam(meetingId, team);
+                ((MainActivity)inflater.getContext()).onBackPressed();
             }
         });
         return vi;

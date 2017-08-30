@@ -72,4 +72,11 @@ public class Meeting {
     public void removeTeam(int position) {
         this.teams.remove(position);
     }
+
+    public boolean isExist(String name) {
+        for (Team team : this.teams) {
+            return team.getName().toString() == name;
+        }
+        return false;
+    }
 }

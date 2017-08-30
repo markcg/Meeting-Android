@@ -69,8 +69,8 @@ public class MeetingTeamListAdapter extends BaseAdapter {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        teams.remove(position);
-                        ((MainActivity) inflater.getContext()).removeTeamMember(meetingId, position);
+//                        teams.remove(position);
+                        ((MainActivity) inflater.getContext()).removeMeetingTeam(meetingId, position);
                         notifyDataSetChanged();
                         dialog.dismiss();
                     }

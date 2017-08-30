@@ -1,18 +1,26 @@
 package com.th.footballmeeting.fragment.meeting;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.th.footballmeeting.MainActivity;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.adapter.MemberInviteListAdapter;
 import com.th.footballmeeting.adapter.TeamInviteListAdapter;
+import com.th.footballmeeting.model.Member;
+import com.th.footballmeeting.model.Team;
+
+import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -64,11 +72,36 @@ public class MeetingTeamInvite extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_meeting_team_invite, container, false);
-        ListView list = (ListView) v.findViewById(R.id.search_list);
+        final ListView list = (ListView) v.findViewById(R.id.search_list);
 
-        MainActivity activity =  (MainActivity) getActivity();
+        final MainActivity activity =  (MainActivity) getActivity();
         TeamInviteListAdapter adapter = new TeamInviteListAdapter(activity, activity.getTeams(), meetingId);
         list.setAdapter(adapter);
+
+        final EditText search = (EditText) v.findViewById(R.id.search_input);
+        search.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    ArrayList<Team> result = activity.searchTeam(search.getText().toString());
+
+                    if (!isValidText(search.getText().toString())) {
+                        alertValidation("Username or name is incorrect format.\n" +
+                                "Please use only a-z, A-Z and 0-9");
+                        return;
+                    }
+
+                    if(result.size() <= 0){
+                        alertValidation("“Username or name is incorrect”");
+                        return;
+                    }
+
+                    ((TeamInviteListAdapter) list.getAdapter()).teams = result;
+                    ((TeamInviteListAdapter) list.getAdapter()).notifyDataSetChanged();
+                }
+
+            }
+        });
         return v;
     }
 
@@ -109,5 +142,28 @@ public class MeetingTeamInvite extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    /* Validation */
+    public void alertValidation(String message) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        alert.setTitle("Alert");
+        alert.setMessage(message);
+        alert.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alert.show();
+    }
+
+    public boolean isValidText(String name) {
+        Pattern p = Pattern.compile("[A-Za-z0-9]");
+        if (p.matcher(name).find()) {
+            return true;
+        }
+        return false;
     }
 }

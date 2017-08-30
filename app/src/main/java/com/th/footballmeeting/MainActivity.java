@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
 
-            if(this.history.peek() != null){
+            if (this.history.peek() != null) {
                 Fragment parent = this.history.pop();
                 fragmentManager.beginTransaction().replace(R.id.main_fragment_container, parent).commit();
                 return;
@@ -163,6 +163,7 @@ public class MainActivity extends AppCompatActivity
     public void onFragmentInteraction(Uri uri) {
 
     }
+
     public void addChildFragment(Fragment child, Fragment parent) {
         this.history.push(parent);
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -175,7 +176,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     /* Member */
-    public ArrayList<Member> getMemberList(){
+    public ArrayList<Member> getMemberList() {
         ArrayList<Member> members = new ArrayList<Member>();
         members.add(new Member("Lionel Messi"));
         members.add(new Member("Cristiano Ronaldo"));
@@ -190,8 +191,18 @@ public class MainActivity extends AppCompatActivity
         return members;
     }
 
-    public void addMember(Member member){
+    public void addMember(Member member) {
         this.members.add(member);
+    }
+
+    public ArrayList<Member> searchMember(String keyword) {
+        ArrayList<Member> members = new ArrayList<Member>();
+        for (Member member : getMemberList()) {
+            if(member.getName().contains(keyword)) {
+                members.add(member);
+            }
+        }
+        return members;
     }
 
     /* Team */
@@ -200,29 +211,31 @@ public class MainActivity extends AppCompatActivity
         return teams;
     }
 
-    public Team getTeam(int id){
+    public Team getTeam(int id) {
         return this.teams.get(id);
     }
 
-    public void setTeams(ArrayList<Team> teams){
+    public void setTeams(ArrayList<Team> teams) {
         this.teams = teams;
     }
 
-    public void addTeam(Team team){
+    public void addTeam(Team team) {
         this.teams.add(team);
     }
 
-    public void addTeamMember(int teamId, Member member){
+    public void addTeamMember(int teamId, Member member) {
         Team team = this.teams.get(teamId);
         team.addMember(member);
         this.teams.set(teamId, team);
     }
-    public void removeTeamMember(int teamId, int memberId){
+
+    public void removeTeamMember(int teamId, int memberId) {
         Team team = this.teams.get(teamId);
         team.removeMember(memberId);
         this.teams.set(teamId, team);
     }
-    public ArrayList<Team> getTeamList(){
+
+    public ArrayList<Team> getTeamList() {
         ArrayList<Team> teams = new ArrayList<Team>();
         teams.add(new Team("Team 1", "First Team", this.getMemberList()));
         teams.add(new Team("Team 2", "Second Team", this.getMemberList()));
@@ -232,11 +245,21 @@ public class MainActivity extends AppCompatActivity
         return teams;
     }
 
+    public ArrayList<Team> searchTeam(String keyword) {
+        ArrayList<Team> teams = new ArrayList<Team>();
+        for (Team team : getTeamList()) {
+            if(team.getName().contains(keyword)) {
+                teams.add(team);
+            }
+        }
+        return teams;
+    }
     /* Meeting */
-    public Meeting getMeeting(int id){
+    public Meeting getMeeting(int id) {
         return this.meetings.get(id);
     }
-    public void addMeeting(Meeting meeting){
+
+    public void addMeeting(Meeting meeting) {
         this.meetings.add(meeting);
     }
 
@@ -244,15 +267,23 @@ public class MainActivity extends AppCompatActivity
         return meetings;
     }
 
-    public void addMeetingTeam(int meetingId, Team team){
+    public void addMeetingTeam(int meetingId, Team team) {
         Meeting meeting = this.meetings.get(meetingId);
         meeting.addTeam(team);
         this.meetings.set(meetingId, meeting);
     }
 
-    public void removeMeetingTeam(int meetingId, int teamId){
+    public void removeMeetingTeam(int meetingId, int teamId) {
         Meeting meeting = this.meetings.get(meetingId);
         meeting.removeTeam(teamId);
-        this.meetings.set(meetingId, meeting);
+//        this.meetings.set(meetingId, meeting);
     }
+
+    public boolean isExist(String name) {
+        for (Team team : this.teams) {
+            return team.getName().toString().equals(name);
+        }
+        return false;
+    }
+
 }

@@ -67,7 +67,7 @@ public class Team implements Parcelable {
     }
 
     public void addMember(Member member) {
-        if(this.members == null){
+        if (this.members == null) {
             this.members = new ArrayList<Member>();
         }
         this.members.add(member);
@@ -78,11 +78,19 @@ public class Team implements Parcelable {
         this.members.remove(position);
     }
 
-    public String toString(){
+    public String toString() {
         System.out.println("Name: " + this.name);
         System.out.println("Description: " + this.description);
         return this.name;
     }
+
+    public boolean isExist(String name) {
+        for (Member member : this.members) {
+            return member.getName().toString() == name;
+        }
+        return false;
+    }
+
     @Override
     public int describeContents() {
         return 0;

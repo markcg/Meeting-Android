@@ -1,18 +1,28 @@
 package com.th.footballmeeting.fragment.team_management;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.th.footballmeeting.MainActivity;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.adapter.MemberInviteListAdapter;
 import com.th.footballmeeting.adapter.TeamListAdapter;
+import com.th.footballmeeting.model.Member;
+
+import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +39,7 @@ public class TeamManagementTeamInvite extends Fragment {
 
     // TODO: Rename and change types of parameters
     public int teamId;
+    public ArrayList<Member> members;
 
     private OnFragmentInteractionListener mListener;
 
@@ -64,11 +75,36 @@ public class TeamManagementTeamInvite extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_team_management_team_invite, container, false);
-        final MainActivity activity =  (MainActivity) getActivity();
+        final MainActivity activity = (MainActivity) getActivity();
+        members = activity.getMemberList();
 
-        ListView list = (ListView) v.findViewById(R.id.search_list);
-        MemberInviteListAdapter adapter = new MemberInviteListAdapter(activity, activity.getMemberList(), this.teamId);
+        final ListView list = (ListView) v.findViewById(R.id.search_list);
+        MemberInviteListAdapter adapter = new MemberInviteListAdapter(activity, members, this.teamId);
         list.setAdapter(adapter);
+
+        final EditText search = (EditText) v.findViewById(R.id.search_input);
+        search.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    ArrayList<Member> result = activity.searchMember(search.getText().toString());
+
+                    if (!isValidText(search.getText().toString())) {
+                        alertValidation("Username or name is incorrect format.\n" +
+                                "Please use only a-z, A-Z and 0-9");
+                        return;
+                    }
+
+                    if(result.size() <= 0){
+                        alertValidation("“Username or name is incorrect”");
+                        return;
+                    }
+                    ((MemberInviteListAdapter) list.getAdapter()).members = result;
+                    ((MemberInviteListAdapter) list.getAdapter()).notifyDataSetChanged();
+                }
+
+            }
+        });
         return v;
     }
 
@@ -109,5 +145,28 @@ public class TeamManagementTeamInvite extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    /* Validation */
+    public void alertValidation(String message) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        alert.setTitle("Alert");
+        alert.setMessage(message);
+        alert.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alert.show();
+    }
+
+    public boolean isValidText(String name) {
+        Pattern p = Pattern.compile("[A-Za-z0-9]");
+        if (p.matcher(name).find()) {
+            return true;
+        }
+        return false;
     }
 }

@@ -1,6 +1,8 @@
 package com.th.footballmeeting.fragment.team_management;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +15,8 @@ import android.widget.EditText;
 import com.th.footballmeeting.MainActivity;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.model.Team;
+
+import java.util.regex.Pattern;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,18 +67,54 @@ public class TeamManagementCreateTeam extends Fragment {
         Button create = (Button) v.findViewById(R.id.create_team_done);
         create.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                MainActivity activity = (MainActivity)getActivity();
+                MainActivity activity = (MainActivity) getActivity();
+                String nameText = name.getText().toString();
+                String descText = description.getText().toString();
+                if(isEmapty(nameText) || isEmapty(descText)){
+                    alertValidation("Please fill in all required text field");
+                    return;
+                }
+
+                if (!isValidText(nameText)) {
+                    alertValidation("Team name is incorrect format.\n" +
+                            "Please use only a-z, A-Z and 0-9");
+                    return;
+                }
+
+                if (!isTextShorterThan(nameText, 4)) {
+                    alertValidation("Please input 4 characters or more");
+                    return;
+                }
+
+                if (!isValidText(descText)) {
+                    alertValidation("Team description is incorrect format.\n" +
+                            "Please use only a-z, A-Z and 0-9");
+                    return;
+                }
+
+                if (!isTextShorterThan(descText, 10)) {
+                    alertValidation("Please input 10 characters or more");
+                    return;
+                }
+
+                if(activity.isExist(nameText)){
+                    alertValidation("Team name is already in use!");
+                    return;
+                }
+
                 Team team = new Team(name.getText().toString(), description.getText().toString(), null);
                 activity.addTeam(team);
                 activity.addChildFragment(TeamManagementTeamList.newInstance());
+                return;
             }
         });
 
         Button cancel = (Button) v.findViewById(R.id.create_team_cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                MainActivity activity = (MainActivity)getActivity();
+                MainActivity activity = (MainActivity) getActivity();
                 activity.addChildFragment(TeamManagementTeamList.newInstance());
+                return;
             }
         });
         return v;
@@ -117,5 +157,36 @@ public class TeamManagementCreateTeam extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    /* Validation */
+    public void alertValidation(String message) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        alert.setTitle("Alert");
+        alert.setMessage(message);
+        alert.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alert.show();
+    }
+
+    public boolean isValidText(String name) {
+        Pattern p = Pattern.compile("[A-Za-z0-9]");
+        if (p.matcher(name).find()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isTextShorterThan(String text, int length) {
+        return text.length() >= length;
+    }
+
+    public boolean isEmapty(String text) {
+        return text.equals("");
     }
 }
