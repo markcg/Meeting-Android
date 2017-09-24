@@ -11,10 +11,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.th.footballmeeting.MainActivity;
+import com.th.footballmeeting.activity.CustomerActivity;
+import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.adapter.MemberListAdapter;
-import com.th.footballmeeting.adapter.TeamListAdapter;
 import com.th.footballmeeting.model.Team;
 
 /**
@@ -67,7 +67,7 @@ public class TeamManagementTeamDetail extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_team_management_team_detail, container, false);
-        final MainActivity activity =  (MainActivity) getActivity();
+        final CustomerActivity activity =  (CustomerActivity) getActivity();
 
         this.team = activity.getTeam(this.teamId);
 

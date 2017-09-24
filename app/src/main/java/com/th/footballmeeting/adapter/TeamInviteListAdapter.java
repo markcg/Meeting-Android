@@ -8,9 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.th.footballmeeting.MainActivity;
+import com.th.footballmeeting.activity.CustomerActivity;
+import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
-import com.th.footballmeeting.model.Member;
 import com.th.footballmeeting.model.Team;
 
 import java.util.ArrayList;
@@ -59,8 +59,8 @@ public class TeamInviteListAdapter extends BaseAdapter {
         Button button = (Button) vi.findViewById(R.id.list_invite);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ((MainActivity)inflater.getContext()).addMeetingTeam(meetingId, team);
-                ((MainActivity)inflater.getContext()).onBackPressed();
+                ((CustomerActivity)inflater.getContext()).addMeetingTeam(meetingId, team);
+                ((CustomerActivity)inflater.getContext()).onBackPressed();
             }
         });
         return vi;

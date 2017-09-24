@@ -11,15 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
 
-import com.th.footballmeeting.MainActivity;
+import com.th.footballmeeting.activity.CustomerActivity;
+import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
-import com.th.footballmeeting.adapter.MemberListAdapter;
-import com.th.footballmeeting.fragment.MeetingFragment;
-import com.th.footballmeeting.fragment.team_management.TeamManagementTeamDetail;
-import com.th.footballmeeting.fragment.team_management.TeamManagementTeamInvite;
 import com.th.footballmeeting.model.Meeting;
 
 import java.util.regex.Pattern;
@@ -75,7 +70,7 @@ public class MeetingCreate extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_meeting_create, container, false);
-        final MainActivity activity =  (MainActivity) getActivity();
+        final CustomerActivity activity =  (CustomerActivity) getActivity();
         final EditText name = (EditText) v.findViewById(R.id.meeting_name_input);
         final EditText desc = (EditText) v.findViewById(R.id.meeting_desc_input);
         final EditText date = (EditText) v.findViewById(R.id.meeting_date);

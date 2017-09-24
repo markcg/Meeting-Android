@@ -1,14 +1,14 @@
 package com.th.footballmeeting.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 
-import com.th.footballmeeting.MainActivity;
+import com.th.footballmeeting.activity.CustomerActivity;
+import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.fragment.team_management.TeamManagementTeamDetail;
 import com.th.footballmeeting.fragment.team_management.TeamManagementTeamList;
@@ -56,7 +56,7 @@ public class TeamListAdapter extends BaseAdapter {
         button.setText(team.getName());
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ((MainActivity)inflater.getContext()).addChildFragment(TeamManagementTeamDetail.newInstance(position), TeamManagementTeamList.newInstance());
+                ((CustomerActivity)inflater.getContext()).addChildFragment(TeamManagementTeamDetail.newInstance(position), TeamManagementTeamList.newInstance());
             }
         });
         return vi;

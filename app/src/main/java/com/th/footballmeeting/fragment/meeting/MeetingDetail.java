@@ -11,12 +11,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.th.footballmeeting.MainActivity;
+import com.th.footballmeeting.activity.CustomerActivity;
+import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.adapter.MeetingTeamListAdapter;
-import com.th.footballmeeting.adapter.TeamListAdapter;
-import com.th.footballmeeting.fragment.team_management.TeamManagementTeamDetail;
-import com.th.footballmeeting.fragment.team_management.TeamManagementTeamInvite;
 import com.th.footballmeeting.model.Meeting;
 
 /**
@@ -69,7 +67,7 @@ public class MeetingDetail extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_meeting_detail, container, false);
-        final MainActivity activity = (MainActivity)  getActivity();
+        final CustomerActivity activity = (CustomerActivity)  getActivity();
         Meeting meeting = (Meeting) activity.getMeeting(this.meetingId);
 
         TextView name = (TextView)v.findViewById(R.id.name);

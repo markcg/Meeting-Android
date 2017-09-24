@@ -4,18 +4,16 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.th.footballmeeting.MainActivity;
+import com.th.footballmeeting.activity.CustomerActivity;
+import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.fragment.team_management.TeamManagementCreateTeam;
 import com.th.footballmeeting.fragment.team_management.TeamManagementTeamList;
-
-import static android.R.attr.button;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,14 +60,14 @@ public class TeamManagement extends Fragment {
         Button createButton = (Button) v.findViewById(R.id.team_management_create);
         createButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ((MainActivity) getActivity()).addChildFragment(TeamManagementCreateTeam.newInstance(), TeamManagement.newInstance());
+                ((CustomerActivity) getActivity()).addChildFragment(TeamManagementCreateTeam.newInstance(), TeamManagement.newInstance());
             }
         });
 
         Button detailButton = (Button) v.findViewById(R.id.team_management_myteam);
         detailButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ((MainActivity) getActivity()).addChildFragment(TeamManagementTeamList.newInstance(), TeamManagement.newInstance());
+                ((CustomerActivity) getActivity()).addChildFragment(TeamManagementTeamList.newInstance(), TeamManagement.newInstance());
             }
         });
 

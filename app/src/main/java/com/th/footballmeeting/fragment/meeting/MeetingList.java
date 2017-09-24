@@ -10,10 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.th.footballmeeting.MainActivity;
+import com.th.footballmeeting.activity.CustomerActivity;
+import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.adapter.MeetingListAdapter;
-import com.th.footballmeeting.adapter.TeamListAdapter;
 import com.th.footballmeeting.model.Meeting;
 
 import java.util.ArrayList;
@@ -30,12 +30,8 @@ import java.util.Collections;
 public class MeetingList extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private ArrayList<Meeting> meetings;
 
     private OnFragmentInteractionListener mListener;
@@ -62,8 +58,6 @@ public class MeetingList extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -71,7 +65,7 @@ public class MeetingList extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_meeting_list, container, false);
-        MainActivity activity =  (MainActivity) getActivity();
+        CustomerActivity activity =  (CustomerActivity) getActivity();
         this.meetings = activity.getMeeting();
         Log.d("Team", this.meetings.toString());
 

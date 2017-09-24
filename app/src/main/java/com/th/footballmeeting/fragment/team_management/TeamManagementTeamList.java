@@ -8,16 +8,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.th.footballmeeting.MainActivity;
+import com.th.footballmeeting.activity.CustomerActivity;
+import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.adapter.TeamListAdapter;
 import com.th.footballmeeting.model.Team;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -71,7 +69,7 @@ public class TeamManagementTeamList extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_team_management_team_list, container, false);
 
-        MainActivity activity =  (MainActivity) getActivity();
+        CustomerActivity activity =  (CustomerActivity) getActivity();
         this.teams = activity.getTeams();
         Log.d("Team", this.teams.toString());
 

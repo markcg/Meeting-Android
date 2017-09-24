@@ -12,11 +12,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.th.footballmeeting.MainActivity;
+import com.th.footballmeeting.activity.CustomerActivity;
+import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
-import com.th.footballmeeting.adapter.MemberInviteListAdapter;
 import com.th.footballmeeting.adapter.TeamInviteListAdapter;
-import com.th.footballmeeting.model.Member;
 import com.th.footballmeeting.model.Team;
 
 import java.util.ArrayList;
@@ -74,7 +73,7 @@ public class MeetingTeamInvite extends Fragment {
         View v = inflater.inflate(R.layout.fragment_meeting_team_invite, container, false);
         final ListView list = (ListView) v.findViewById(R.id.search_list);
 
-        final MainActivity activity =  (MainActivity) getActivity();
+        final CustomerActivity activity =  (CustomerActivity) getActivity();
         TeamInviteListAdapter adapter = new TeamInviteListAdapter(activity, activity.getTeams(), meetingId);
         list.setAdapter(adapter);
 

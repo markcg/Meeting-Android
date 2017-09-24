@@ -6,19 +6,16 @@ import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.th.footballmeeting.MainActivity;
+import com.th.footballmeeting.activity.CustomerActivity;
+import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.adapter.MemberInviteListAdapter;
-import com.th.footballmeeting.adapter.TeamListAdapter;
 import com.th.footballmeeting.model.Member;
 
 import java.util.ArrayList;
@@ -75,7 +72,7 @@ public class TeamManagementTeamInvite extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_team_management_team_invite, container, false);
-        final MainActivity activity = (MainActivity) getActivity();
+        final CustomerActivity activity = (CustomerActivity) getActivity();
         members = activity.getMemberList();
 
         final ListView list = (ListView) v.findViewById(R.id.search_list);

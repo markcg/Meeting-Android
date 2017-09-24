@@ -1,28 +1,32 @@
-package com.th.footballmeeting;
+package com.th.footballmeeting.activity;
 
+import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.th.footballmeeting.R;
+import com.th.footballmeeting.fragment.FriendFragment;
 import com.th.footballmeeting.fragment.Home;
 import com.th.footballmeeting.fragment.MeetingFragment;
+import com.th.footballmeeting.fragment.ReserveFragment;
 import com.th.footballmeeting.fragment.TeamManagement;
+import com.th.footballmeeting.fragment.friend.AddFriendFragment;
+import com.th.footballmeeting.fragment.friend.RemoveFriendFragment;
 import com.th.footballmeeting.fragment.meeting.MeetingCreate;
 import com.th.footballmeeting.fragment.meeting.MeetingDetail;
 import com.th.footballmeeting.fragment.meeting.MeetingList;
 import com.th.footballmeeting.fragment.meeting.MeetingTeamInvite;
+import com.th.footballmeeting.fragment.reserve.ScheduleFragment;
 import com.th.footballmeeting.fragment.team_management.TeamManagementCreateTeam;
 import com.th.footballmeeting.fragment.team_management.TeamManagementTeamDetail;
 import com.th.footballmeeting.fragment.team_management.TeamManagementTeamInvite;
@@ -34,9 +38,16 @@ import com.th.footballmeeting.model.Team;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener
+public class CustomerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener
+        /* Home Fragment */
         , Home.OnFragmentInteractionListener
+        /* FriendFragment */
+        , FriendFragment.OnFragmentInteractionListener
+        , AddFriendFragment.OnFragmentInteractionListener
+        , RemoveFriendFragment.OnFragmentInteractionListener
+        /* RequestFragment */
+        , ReserveFragment.OnFragmentInteractionListener
+        , ScheduleFragment.OnFragmentInteractionListener
         /* MeetingFragment Fragement */
         , MeetingFragment.OnFragmentInteractionListener
         , MeetingCreate.OnFragmentInteractionListener
@@ -62,7 +73,7 @@ public class MainActivity extends AppCompatActivity
         this.members = this.getMemberList();
         this.history = new LinkedList<Fragment>();
 
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_customer);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -114,7 +125,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_logout) {
+            Intent intent = new Intent(CustomerActivity.this, CustomerLoginActivity.class);
+            CustomerActivity.this.startActivity(intent);
             return true;
         }
 
@@ -133,8 +146,12 @@ public class MainActivity extends AppCompatActivity
             fragmentClass = MeetingFragment.class;
         } else if (id == R.id.nav_team) {
             fragmentClass = TeamManagement.class;
+        } else if (id == R.id.nav_friend) {
+            fragmentClass = FriendFragment.class;
+        } else if (id == R.id.nav_reserve) {
+            fragmentClass = ReserveFragment.class;
         } else if (id == R.id.nav_profile) {
-
+            return true;
         }
 
         try {
@@ -198,7 +215,7 @@ public class MainActivity extends AppCompatActivity
     public ArrayList<Member> searchMember(String keyword) {
         ArrayList<Member> members = new ArrayList<Member>();
         for (Member member : getMemberList()) {
-            if(member.getName().contains(keyword)) {
+            if (member.getName().contains(keyword)) {
                 members.add(member);
             }
         }
@@ -248,12 +265,13 @@ public class MainActivity extends AppCompatActivity
     public ArrayList<Team> searchTeam(String keyword) {
         ArrayList<Team> teams = new ArrayList<Team>();
         for (Team team : getTeamList()) {
-            if(team.getName().contains(keyword)) {
+            if (team.getName().contains(keyword)) {
                 teams.add(team);
             }
         }
         return teams;
     }
+
     /* Meeting */
     public Meeting getMeeting(int id) {
         return this.meetings.get(id);
@@ -285,5 +303,4 @@ public class MainActivity extends AppCompatActivity
         }
         return false;
     }
-
 }

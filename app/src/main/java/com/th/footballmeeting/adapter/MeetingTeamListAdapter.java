@@ -10,10 +10,9 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.th.footballmeeting.MainActivity;
+import com.th.footballmeeting.activity.CustomerActivity;
+import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
-import com.th.footballmeeting.fragment.team_management.TeamManagementTeamDetail;
-import com.th.footballmeeting.fragment.team_management.TeamManagementTeamList;
 import com.th.footballmeeting.model.Team;
 
 import java.util.ArrayList;
@@ -70,7 +69,7 @@ public class MeetingTeamListAdapter extends BaseAdapter {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 //                        teams.remove(position);
-                        ((MainActivity) inflater.getContext()).removeMeetingTeam(meetingId, position);
+                        ((CustomerActivity) inflater.getContext()).removeMeetingTeam(meetingId, position);
                         notifyDataSetChanged();
                         dialog.dismiss();
                     }

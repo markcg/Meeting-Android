@@ -7,15 +7,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 
-import com.th.footballmeeting.MainActivity;
+import com.th.footballmeeting.activity.CustomerActivity;
+import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.fragment.meeting.MeetingDetail;
 import com.th.footballmeeting.fragment.meeting.MeetingList;
-import com.th.footballmeeting.fragment.meeting.MeetingTeamInvite;
-import com.th.footballmeeting.fragment.team_management.TeamManagementTeamDetail;
-import com.th.footballmeeting.fragment.team_management.TeamManagementTeamList;
 import com.th.footballmeeting.model.Meeting;
-import com.th.footballmeeting.model.Team;
 
 import java.util.ArrayList;
 
@@ -60,7 +57,7 @@ public class MeetingListAdapter extends BaseAdapter {
         button.setText(meeting.getName());
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ((MainActivity)inflater.getContext()).addChildFragment(MeetingDetail.newInstance(position), MeetingList.newInstance());
+                ((CustomerActivity)inflater.getContext()).addChildFragment(MeetingDetail.newInstance(position), MeetingList.newInstance());
             }
         });
         return vi;

@@ -9,12 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.th.footballmeeting.MainActivity;
+import com.th.footballmeeting.activity.CustomerActivity;
+import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.fragment.meeting.MeetingCreate;
 import com.th.footballmeeting.fragment.meeting.MeetingList;
-import com.th.footballmeeting.fragment.team_management.TeamManagementCreateTeam;
-import com.th.footballmeeting.fragment.team_management.TeamManagementTeamList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,14 +71,14 @@ public class MeetingFragment extends Fragment {
         Button createButton = (Button) v.findViewById(R.id.meeting_create);
         createButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ((MainActivity) getActivity()).addChildFragment(MeetingCreate.newInstance(), MeetingFragment.newInstance());
+                ((CustomerActivity) getActivity()).addChildFragment(MeetingCreate.newInstance(), MeetingFragment.newInstance());
             }
         });
 
         Button detailButton = (Button) v.findViewById(R.id.meeting_list);
         detailButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ((MainActivity) getActivity()).addChildFragment(MeetingList.newInstance(), MeetingFragment.newInstance());
+                ((CustomerActivity) getActivity()).addChildFragment(MeetingList.newInstance(), MeetingFragment.newInstance());
             }
         });
 

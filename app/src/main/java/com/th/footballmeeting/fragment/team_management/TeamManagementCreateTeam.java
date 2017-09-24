@@ -12,7 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.th.footballmeeting.MainActivity;
+import com.th.footballmeeting.activity.CustomerActivity;
+import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.model.Team;
 
@@ -67,7 +68,7 @@ public class TeamManagementCreateTeam extends Fragment {
         Button create = (Button) v.findViewById(R.id.create_team_done);
         create.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                MainActivity activity = (MainActivity) getActivity();
+                CustomerActivity activity = (CustomerActivity) getActivity();
                 String nameText = name.getText().toString();
                 String descText = description.getText().toString();
                 if(isEmapty(nameText) || isEmapty(descText)){
@@ -112,7 +113,7 @@ public class TeamManagementCreateTeam extends Fragment {
         Button cancel = (Button) v.findViewById(R.id.create_team_cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                MainActivity activity = (MainActivity) getActivity();
+                CustomerActivity activity = (CustomerActivity) getActivity();
                 activity.addChildFragment(TeamManagementTeamList.newInstance());
                 return;
             }

@@ -10,12 +10,10 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.th.footballmeeting.MainActivity;
+import com.th.footballmeeting.activity.CustomerActivity;
+import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
-import com.th.footballmeeting.fragment.team_management.TeamManagementTeamDetail;
-import com.th.footballmeeting.fragment.team_management.TeamManagementTeamList;
 import com.th.footballmeeting.model.Member;
-import com.th.footballmeeting.model.Team;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -116,7 +114,7 @@ public class MemberListAdapter extends BaseAdapter {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 //                        members.remove(position);
-                        ((MainActivity) inflater.getContext()).removeTeamMember(teamId, position);
+                        ((CustomerActivity) inflater.getContext()).removeTeamMember(teamId, position);
                         notifyDataSetChanged();
                         dialog.dismiss();
                     }
