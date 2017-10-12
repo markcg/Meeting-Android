@@ -3,9 +3,9 @@ package com.th.footballmeeting.services;
 import android.util.Log;
 
 import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.ParsedRequestListener;
-import com.androidnetworking.common.Priority;
 import com.th.footballmeeting.MainApplication;
 import com.th.footballmeeting.model.Team;
 
@@ -20,30 +20,16 @@ import static android.content.ContentValues.TAG;
 
 public class DataService {
     public String url;
-    public DataService(){
+
+    public DataService() {
         this.url = "http://10.0.2.2/meeting/public/api/";
     }
-    public void searchTeam(String teamName) {
-        AndroidNetworking.get(this.url + "search/teams")
-                .addQueryParameter("keyword", teamName)
-                .setTag(this)
-                .setPriority(Priority.LOW)
-                .build()
-                .getAsObjectList(Team.class, new ParsedRequestListener<List<Team>>() {
-                    @Override
-                    public void onResponse(List<Team> teams) {
-                        // do anything with response
-                        Log.d(TAG, "TeamList size : " + teams.size());
-                        for (Team team : teams) {
-                            Log.d(TAG, "team");
-                        }
-                        MainApplication.searchTeam = (ArrayList<Team>) teams;
-                    }
+    /* User */
 
-                    @Override
-                    public void onError(ANError anError) {
-                        // handle error
-                    }
-                });
-    }
+
+    /* Field */
+
+
+    /* Team */
+
 }
