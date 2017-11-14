@@ -1,7 +1,5 @@
 package com.th.footballmeeting.activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 
@@ -11,20 +9,25 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.th.footballmeeting.MainApplication;
 import com.th.footballmeeting.R;
+import com.th.footballmeeting.model.Customer;
 import com.th.footballmeeting.services.ValidationService;
+import com.th.footballmeeting.services.models.UserService;
 
 /**
  * A login screen that offers login via email/password.
  */
 public class CustomerLoginActivity extends AppCompatActivity {
-    ValidationService validator;
+    static ValidationService validator;
+    static UserService userService;
     EditText username;
     EditText password;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         this.validator = new ValidationService(this);
         this.username = (EditText) findViewById(R.id.username);
         this.password = (EditText) findViewById(R.id.password);
@@ -38,6 +41,20 @@ public class CustomerLoginActivity extends AppCompatActivity {
             }
         });
 
+        this.userService = new UserService(new UserService.Callback() {
+            @Override
+            public void callback(boolean status, Object obj) {
+                if(status){
+                    MainApplication app = (MainApplication) getApplication();
+                    app.user = (Customer) obj;
+                    Intent intent = new Intent(CustomerLoginActivity.this, CustomerActivity.class);
+                    CustomerLoginActivity.this.startActivity(intent);
+                } else {
+                    validator.alertValidation("Username or password is incorrect");
+                }
+            }
+        });
+
         Button login = (Button) findViewById(R.id.email_sign_in_button);
         login.setOnClickListener(new OnClickListener() {
             @Override
@@ -45,12 +62,10 @@ public class CustomerLoginActivity extends AppCompatActivity {
                 String username = CustomerLoginActivity.this.username.getText().toString();
                 String password = CustomerLoginActivity.this.password.getText().toString();
 
-                Intent intent = new Intent(CustomerLoginActivity.this, CustomerActivity.class);
                 if (allFilled(username, password)
                         && validateUsername(username)
                         && validatePassword(password))
-
-                CustomerLoginActivity.this.startActivity(intent);
+                    CustomerLoginActivity.this.userService.login(username, password);
             }
         });
 

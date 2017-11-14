@@ -51,12 +51,12 @@ public class TeamListAdapter extends BaseAdapter {
         View vi = convertView;
         if (convertView == null)
             vi = inflater.inflate(R.layout.team_list, parent, false);
-        Team team = (Team) getItem(position);
+        final Team team = (Team) getItem(position);
         Button button = (Button) vi.findViewById(R.id.team_open);
         button.setText(team.getName());
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ((CustomerActivity)inflater.getContext()).addChildFragment(TeamManagementTeamDetail.newInstance(position), TeamManagementTeamList.newInstance());
+                ((CustomerActivity)inflater.getContext()).addChildFragment(TeamManagementTeamDetail.newInstance(team.id), TeamManagementTeamList.newInstance());
             }
         });
         return vi;

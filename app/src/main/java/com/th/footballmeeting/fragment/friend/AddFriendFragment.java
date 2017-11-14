@@ -6,17 +6,20 @@ import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.th.footballmeeting.MainApplication;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.activity.CustomerActivity;
 import com.th.footballmeeting.adapter.FriendAddListAdapter;
-import com.th.footballmeeting.adapter.MemberInviteListAdapter;
-import com.th.footballmeeting.model.Member;
+import com.th.footballmeeting.model.Customer;
+import com.th.footballmeeting.services.ValidationService;
+import com.th.footballmeeting.services.models.UserService;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -34,7 +37,12 @@ public class AddFriendFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
     // TODO: Rename and change types of parameters
-    public ArrayList<Member> members;
+    public ArrayList<Customer> members;
+    public CustomerActivity activity;
+    public UserService service;
+    public ListView list;
+    public int customerId;
+
     private OnFragmentInteractionListener mListener;
 
     public AddFriendFragment() {
@@ -67,32 +75,46 @@ public class AddFriendFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_add_friend, container, false);
-        final CustomerActivity activity = (CustomerActivity) getActivity();
-        members = activity.getMemberList();
+        MainApplication application = (MainApplication) getActivity().getApplication();
+        customerId = application.user.getId();
 
-        final ListView list = (ListView) v.findViewById(R.id.search_list);
-        FriendAddListAdapter adapter = new FriendAddListAdapter(getActivity(), members);
-        list.setAdapter(adapter);
+        this.activity = (CustomerActivity) getActivity();
+        this.list = (ListView) v.findViewById(R.id.search_list);
+        this.service = new UserService(new UserService.CallbackList() {
+            @Override
+            public void callback(boolean status, ArrayList<?> obj) {
+                if(status){
+                    AddFriendFragment.this.members = (ArrayList<Customer>)obj;
+                    FriendAddListAdapter adapter = new FriendAddListAdapter(getActivity(), AddFriendFragment.this, (ArrayList<Customer>)obj, customerId);
+                    AddFriendFragment.this.list.setAdapter(adapter);
+                }
+            }
+        });
+
+        service.searchNewFriend("", customerId);
 
         final EditText search = (EditText) v.findViewById(R.id.search_input);
         search.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus) {
-                    ArrayList<Member> result = activity.searchMember(search.getText().toString());
+                    String keyword = search.getText().toString();
+                    int id = AddFriendFragment.this.customerId;
 
                     if (!isValidText(search.getText().toString())) {
                         alertValidation("Username or name is incorrect format.\n" +
                                 "Please use only a-z, A-Z and 0-9");
                         return;
+                    } else {
+                        AddFriendFragment.this.service.searchNewFriend(keyword, id);
                     }
 
-                    if(result.size() <= 0){
-                        alertValidation("“Username or name is incorrect”");
-                        return;
-                    }
-                    ((FriendAddListAdapter) list.getAdapter()).friends = result;
-                    ((FriendAddListAdapter) list.getAdapter()).notifyDataSetChanged();
+//                    if(result.size() <= 0){
+//                        alertValidation("“Username or name is incorrect”");
+//                        return;
+//                    }
+//                    ((FriendAddListAdapter) list.getAdapter()).friends = result;
+//                    ((FriendAddListAdapter) list.getAdapter()).notifyDataSetChanged();
                 }
 
             }
@@ -137,6 +159,10 @@ public class AddFriendFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+    /* Reload */
+    public void reloadFriend(){
+        service.searchNewFriend("", customerId);
     }
 
     /* Validation */

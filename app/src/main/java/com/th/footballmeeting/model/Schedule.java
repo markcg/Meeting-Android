@@ -5,19 +5,18 @@ package com.th.footballmeeting.model;
  */
 
 public class Schedule {
-    private String time;
-    private String status;
+    int field_id;
+    String date;
+    String schedule;
+    String status;
+    int meeting_id;
+    int customer_id;
+    String time;
+    String created_at;
+    String updated_at;
 
     public Schedule(String time, String status) {
-        this.time = time;
         this.status = status;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
         this.time = time;
     }
 
@@ -27,5 +26,13 @@ public class Schedule {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }

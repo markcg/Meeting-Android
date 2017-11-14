@@ -10,15 +10,19 @@ import java.util.ArrayList;
  */
 
 public class Team implements Parcelable {
-    private String name;
-    private String description;
-    private ArrayList<Member> members;
+    public int id;
+    public int customer_id;
+    public int team_id;
+    public int meeting_id;
+    public String name;
+    public String description;
+    public ArrayList<Customer> members;
 
     public Team() {
-        this.members = new ArrayList<Member>();
+        this.members = new ArrayList<Customer>();
     }
 
-    public Team(String name, String description, ArrayList<Member> members) {
+    public Team(String name, String description, ArrayList<Customer> members) {
         this.name = name;
         this.description = description;
         this.members = members;
@@ -58,23 +62,23 @@ public class Team implements Parcelable {
         this.description = description;
     }
 
-    public ArrayList<Member> getMembers() {
+    public ArrayList<Customer> getCustomers() {
         return members;
     }
 
-    public void setMembers(ArrayList<Member> members) {
+    public void setCustomers(ArrayList<Customer> members) {
         this.members = members;
     }
 
-    public void addMember(Member member) {
+    public void addCustomer(Customer member) {
         if (this.members == null) {
-            this.members = new ArrayList<Member>();
+            this.members = new ArrayList<Customer>();
         }
         this.members.add(member);
 
     }
 
-    public void removeMember(int position) {
+    public void removeCustomer(int position) {
         this.members.remove(position);
     }
 
@@ -85,7 +89,7 @@ public class Team implements Parcelable {
     }
 
     public boolean isExist(String name) {
-        for (Member member : this.members) {
+        for (Customer member : this.members) {
             return member.getName().toString() == name;
         }
         return false;

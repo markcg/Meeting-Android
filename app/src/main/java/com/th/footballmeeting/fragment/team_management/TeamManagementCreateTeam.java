@@ -12,10 +12,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.th.footballmeeting.MainApplication;
 import com.th.footballmeeting.activity.CustomerActivity;
 import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
+import com.th.footballmeeting.model.Customer;
 import com.th.footballmeeting.model.Team;
+import com.th.footballmeeting.services.DataService;
+import com.th.footballmeeting.services.models.TeamService;
 
 import java.util.regex.Pattern;
 
@@ -31,6 +35,8 @@ public class TeamManagementCreateTeam extends Fragment {
     // TODO: Rename and change types of parameters
     public EditText name;
     public EditText description;
+    public TeamService service;
+    public Customer user;
 
     private OnFragmentInteractionListener mListener;
 
@@ -62,8 +68,20 @@ public class TeamManagementCreateTeam extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_team_management_create_team, container, false);
+        MainApplication app = (MainApplication) getActivity().getApplication();
+
+        user = app.user;
         name = (EditText) v.findViewById(R.id.create_team_name_input);
         description = (EditText) v.findViewById(R.id.create_team_description_input);
+        service = new TeamService(new DataService.Callback() {
+            @Override
+            public void callback(boolean status, Object obj) {
+                if(status){
+                    CustomerActivity activity = (CustomerActivity) getActivity();
+                    activity.addChildFragment(TeamManagementTeamList.newInstance());
+                }
+            }
+        });
 
         Button create = (Button) v.findViewById(R.id.create_team_done);
         create.setOnClickListener(new View.OnClickListener() {
@@ -103,9 +121,7 @@ public class TeamManagementCreateTeam extends Fragment {
                     return;
                 }
 
-                Team team = new Team(name.getText().toString(), description.getText().toString(), null);
-                activity.addTeam(team);
-                activity.addChildFragment(TeamManagementTeamList.newInstance());
+                TeamManagementCreateTeam.this.service.create(TeamManagementCreateTeam.this.user.getId(), nameText, descText);
                 return;
             }
         });

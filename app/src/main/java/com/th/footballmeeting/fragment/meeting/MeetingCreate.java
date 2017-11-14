@@ -12,10 +12,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.th.footballmeeting.MainApplication;
 import com.th.footballmeeting.activity.CustomerActivity;
 import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
+import com.th.footballmeeting.model.Customer;
 import com.th.footballmeeting.model.Meeting;
+import com.th.footballmeeting.services.DataService;
+import com.th.footballmeeting.services.models.MeetingService;
 
 import java.util.regex.Pattern;
 
@@ -28,15 +32,8 @@ import java.util.regex.Pattern;
  * create an instance of this fragment.
  */
 public class MeetingCreate extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    public MeetingService service;
+    public Customer user;
     private OnFragmentInteractionListener mListener;
 
     public MeetingCreate() {
@@ -60,16 +57,23 @@ public class MeetingCreate extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_meeting_create, container, false);
+        MainApplication app = (MainApplication) getActivity().getApplication();
+
+        this.user = app.user;
+        this.service = new MeetingService(new DataService.Callback() {
+            @Override
+            public void callback(boolean status, Object obj) {
+                CustomerActivity activity = (CustomerActivity) getActivity();
+                activity.addChildFragment(MeetingList.newInstance());
+            }
+        });
+
         final CustomerActivity activity =  (CustomerActivity) getActivity();
         final EditText name = (EditText) v.findViewById(R.id.meeting_name_input);
         final EditText desc = (EditText) v.findViewById(R.id.meeting_desc_input);
@@ -124,9 +128,8 @@ public class MeetingCreate extends Fragment {
                     return;
                 }
 
-                Meeting meeting = new Meeting(name.getText().toString(), date.getText().toString(), start.getText().toString(), end.getText().toString());
-                activity.addMeeting(meeting);
-                activity.addChildFragment(MeetingList.newInstance());
+                MeetingCreate.this.service.create(MeetingCreate.this.user.getId(), nameText, descText, dateText, startText, endText);
+                return;
             }
         });
 
@@ -139,7 +142,6 @@ public class MeetingCreate extends Fragment {
         return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);

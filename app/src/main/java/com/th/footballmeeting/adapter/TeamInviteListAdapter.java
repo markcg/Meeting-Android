@@ -1,6 +1,7 @@
 package com.th.footballmeeting.adapter;
 
 import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,10 @@ import android.widget.TextView;
 import com.th.footballmeeting.activity.CustomerActivity;
 import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
+import com.th.footballmeeting.fragment.meeting.MeetingTeamInvite;
 import com.th.footballmeeting.model.Team;
+import com.th.footballmeeting.services.ValidationService;
+import com.th.footballmeeting.services.models.MeetingService;
 
 import java.util.ArrayList;
 
@@ -20,15 +24,32 @@ import java.util.ArrayList;
  */
 
 public class TeamInviteListAdapter extends BaseAdapter {
-    private int meetingId;
-    private Activity activity;
+    public int meetingId;
+    public Activity activity;
     public ArrayList<Team> teams;
+    public MeetingTeamInvite fragment;
+    public MeetingService service;
+    public ValidationService validator;
     private static LayoutInflater inflater = null;
 
-    public TeamInviteListAdapter(Activity activity, ArrayList<Team> teams, int meetingId) {
+    public TeamInviteListAdapter(Activity activity, MeetingTeamInvite fragment, ArrayList<Team> teams, int meetingId) {
         this.activity = activity;
         this.teams = teams;
         this.meetingId = meetingId;
+        this.fragment = fragment;
+        this.validator = new ValidationService((AppCompatActivity) activity);
+        this.service = new MeetingService(new MeetingService.Callback() {
+            @Override
+            public void callback(boolean status, Object obj) {
+                if(status){
+                    TeamInviteListAdapter.this.validator.successValidation("Team add");
+                    TeamInviteListAdapter.this.fragment.reloadTeam();
+                    TeamInviteListAdapter.this.fragment.getFragmentManager().popBackStackImmediate();
+                } else {
+                    TeamInviteListAdapter.this.validator.alertValidation("Team is not exist");
+                }
+            }
+        });
         inflater = (LayoutInflater) activity.getLayoutInflater();
     }
 
@@ -59,8 +80,7 @@ public class TeamInviteListAdapter extends BaseAdapter {
         Button button = (Button) vi.findViewById(R.id.list_invite);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ((CustomerActivity)inflater.getContext()).addMeetingTeam(meetingId, team);
-                ((CustomerActivity)inflater.getContext()).onBackPressed();
+                TeamInviteListAdapter.this.service.addTeam(TeamInviteListAdapter.this.meetingId, team.id);
             }
         });
         return vi;

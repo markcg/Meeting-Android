@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.th.footballmeeting.R;
-import com.th.footballmeeting.model.Member;
 import com.th.footballmeeting.model.Schedule;
 
 import java.util.ArrayList;

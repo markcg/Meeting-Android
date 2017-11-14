@@ -16,6 +16,10 @@ import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.adapter.MeetingTeamListAdapter;
 import com.th.footballmeeting.model.Meeting;
+import com.th.footballmeeting.model.Team;
+import com.th.footballmeeting.services.models.MeetingService;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,13 +30,18 @@ import com.th.footballmeeting.model.Meeting;
  * create an instance of this fragment.
  */
 public class MeetingDetail extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String MEETINGID = "meetingId";
+    public int meetingId;
+    public Meeting meeting;
+    public ArrayList<Team> teams;
+    public MeetingService meetingService;
+    public MeetingService teamService;
 
-    // TODO: Rename and change types of parameters
-    private int meetingId;
-
+    public TextView name;
+    public TextView date;
+    public TextView start;
+    public TextView end;
+    public ListView list;
     private OnFragmentInteractionListener mListener;
 
     public MeetingDetail() {
@@ -68,20 +77,33 @@ public class MeetingDetail extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_meeting_detail, container, false);
         final CustomerActivity activity = (CustomerActivity)  getActivity();
-        Meeting meeting = (Meeting) activity.getMeeting(this.meetingId);
+        this.name = (TextView)v.findViewById(R.id.name);
+        this.date = (TextView)v.findViewById(R.id.date);
+        this.start = (TextView)v.findViewById(R.id.start);
+        this.end = (TextView) v.findViewById(R.id.end);
+        this.list = (ListView) v.findViewById(R.id.meeting_team_list);
 
-        TextView name = (TextView)v.findViewById(R.id.name);
-        name.setText(meeting.getName());
-        TextView date = (TextView)v.findViewById(R.id.date);
-        date.setText(meeting.getDate());
-        TextView start = (TextView)v.findViewById(R.id.start);
-        start.setText(meeting.getStart());
-        TextView end = (TextView) v.findViewById(R.id.end);
-        end.setText(meeting.getEnd());
-
-        ListView list = (ListView) v.findViewById(R.id.meeting_team_list);
-        MeetingTeamListAdapter adapter = new MeetingTeamListAdapter(getActivity(), meeting.getTeams(), meetingId);
-        list.setAdapter(adapter);
+        this.meetingService = new MeetingService(new MeetingService.Callback() {
+            @Override
+            public void callback(boolean status, Object obj) {
+                if(status){
+                    MeetingDetail.this.meeting = (Meeting) obj;
+                    MeetingDetail.this.reloadMeetingDetail((Meeting) obj);
+                    MeetingDetail.this.teamService.teams(((Meeting) obj).id);
+                }
+            }
+        });
+        this.teamService = new MeetingService(new MeetingService.CallbackList() {
+            @Override
+            public void callback(boolean status, ArrayList<?> obj) {
+                if(status){
+                    MeetingDetail.this.teams = (ArrayList<Team>)obj;
+                    int id = MeetingDetail.this.meeting.id;
+                    MeetingTeamListAdapter adapter = new MeetingTeamListAdapter(getActivity(), MeetingDetail.this, (ArrayList<Team>)obj, id);
+                    list.setAdapter(adapter);
+                }
+            }
+        });
 
         Button button = (Button) v.findViewById(R.id.meeting_invite);
         button.setOnClickListener(new View.OnClickListener() {
@@ -89,10 +111,10 @@ public class MeetingDetail extends Fragment {
                 activity.addChildFragment(MeetingTeamInvite.newInstance(meetingId), MeetingDetail.newInstance(meetingId));
             }
         });
+        this.meetingService.get(meetingId);
         return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -129,5 +151,15 @@ public class MeetingDetail extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+    /* UI Update */
+    public void reloadTeam(int id){
+        this.teamService.teams(id);
+    }
+    public void reloadMeetingDetail(Meeting meeting){
+        name.setText(meeting.getName());
+        date.setText(meeting.getDate());
+        start.setText(meeting.getStart());
+        end.setText(meeting.getEnd());
     }
 }

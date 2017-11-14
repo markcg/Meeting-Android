@@ -1,16 +1,30 @@
 package com.th.footballmeeting.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.services.ValidationService;
+import com.th.footballmeeting.services.models.FieldService;
+import com.th.footballmeeting.services.models.UserService;
 
-public class FieldRegisterActivity extends AppCompatActivity {
+public class FieldRegisterActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, LocationListener {
     ValidationService validator;
     EditText username;
     EditText password;
@@ -20,6 +34,9 @@ public class FieldRegisterActivity extends AppCompatActivity {
     EditText address;
     EditText email;
     EditText phone;
+
+    private GoogleApiClient mGoogleApiClient;
+    Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,31 +53,122 @@ public class FieldRegisterActivity extends AppCompatActivity {
         this.email = (EditText) findViewById(R.id.email);
         this.phone = (EditText) findViewById(R.id.phone);
 
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
         Button register = (Button) findViewById(R.id.confirm);
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(FieldRegisterActivity.this, FieldLoginActivity.class);
-                String username = FieldRegisterActivity.this.username.getText().toString();
-                String password = FieldRegisterActivity.this.password.getText().toString();
-                String rePassword = FieldRegisterActivity.this.rePassword.getText().toString();
-                String name = FieldRegisterActivity.this.name.getText().toString();
-                String description = FieldRegisterActivity.this.name.getText().toString();
-                String address = FieldRegisterActivity.this.name.getText().toString();
-                String email = FieldRegisterActivity.this.email.getText().toString();
-                String phone = FieldRegisterActivity.this.phone.getText().toString();
-                if (allFilled(username, password, rePassword, name, email, phone)
-                        && validateUsername(username)
-                        && validatePassword(password)
-                        && validateRePassword(rePassword, password)
-                        && validateName(name)
-                        && validateDescription(description)
-                        && validateAddress(address)
-                        && validateEmail(email)
-                        && validatePhone(phone))
-                    FieldRegisterActivity.this.startActivity(intent);
+                checkGPSPermission();
             }
         });
+    }
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
+    /* Permission */
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    public void checkGPSPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                checkGPSPermission();
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                        10001);
+            }
+        } else {
+            registering();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 10001: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    registering();
+                } else {
+                    validator.alertValidation("Permission Denied");
+                }
+                return;
+            }
+        }
+    }
+    /* Register */
+    public void registering() {
+        String username = FieldRegisterActivity.this.username.getText().toString();
+        String password = FieldRegisterActivity.this.password.getText().toString();
+        String rePassword = FieldRegisterActivity.this.rePassword.getText().toString();
+        String name = FieldRegisterActivity.this.name.getText().toString();
+        String description = FieldRegisterActivity.this.description.getText().toString();
+        String address = FieldRegisterActivity.this.address.getText().toString();
+        String email = FieldRegisterActivity.this.email.getText().toString();
+        String phone = FieldRegisterActivity.this.phone.getText().toString();
+
+        final FieldService service = new FieldService(new UserService.Callback() {
+            @Override
+            public void callback(boolean status, Object obj) {
+                if (status) {
+                    validator.successValidation("Register Successful, Please Login.");
+                    Intent intent = new Intent(FieldRegisterActivity.this, FieldLoginActivity.class);
+                    FieldRegisterActivity.this.startActivity(intent);
+                } else {
+                    validator.alertValidation("Username or password is incorrect");
+                }
+            }
+        });
+
+        double longitude = this.mLastLocation != null ? this.mLastLocation.getLongitude() : 98.98540019989014;
+        double latitude = this.mLastLocation != null ? this.mLastLocation.getLatitude() : 18.788179951649276;
+        if (allFilled(username, password, rePassword, name, email, phone)
+                && validateUsername(username)
+                && validatePassword(password)
+                && validateRePassword(rePassword, password)
+                && validateName(name)
+                && validateDescription(description)
+                && validateAddress(address)
+                && validateEmail(email)
+                && validatePhone(phone))
+            service.register(username, password, name, description, address, email, phone, Double.toString(latitude), Double.toString(longitude));
     }
 
     /* Validation */
@@ -200,5 +308,30 @@ public class FieldRegisterActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    /* Location Service */
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        try {
+
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+            if (mLastLocation != null) {
+                finish();
+            }
+        } catch (SecurityException e) {
+
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }

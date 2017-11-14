@@ -1,18 +1,20 @@
 package com.th.footballmeeting.model;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by macbookpro on 7/26/2017 AD.
  */
 
 public class Meeting {
-    private String name;
-    private String date;
-    private String start;
-    private String end;
-    private ArrayList<Team> teams;
+    public int id;
+    public String name;
+    public String detail;
+    public String date;
+    public String start;
+    public String end;
+    public String customer_id;
+    public ArrayList<Team> teams;
 
     public Meeting() {
     }
@@ -55,6 +57,22 @@ public class Meeting {
 
     public void setEnd(String end) {
         this.end = end;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
+
+    public String getCustomer_id() {
+        return customer_id;
+    }
+
+    public void setCustomer_id(String customer_id) {
+        this.customer_id = customer_id;
     }
 
     public ArrayList<Team> getTeams() {

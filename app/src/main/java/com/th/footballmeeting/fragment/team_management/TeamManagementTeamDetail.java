@@ -11,11 +11,18 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.th.footballmeeting.activity.CustomerActivity;
-import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
+import com.th.footballmeeting.activity.CustomerActivity;
+import com.th.footballmeeting.adapter.FriendAddListAdapter;
 import com.th.footballmeeting.adapter.MemberListAdapter;
+import com.th.footballmeeting.fragment.friend.AddFriendFragment;
+import com.th.footballmeeting.model.Customer;
 import com.th.footballmeeting.model.Team;
+import com.th.footballmeeting.services.DataService;
+import com.th.footballmeeting.services.models.TeamService;
+import com.th.footballmeeting.services.models.UserService;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,7 +39,14 @@ public class TeamManagementTeamDetail extends Fragment {
 
     // TODO: Rename and change types of parameters
     public int teamId;
-    private Team team;
+    public TeamService teamService;
+    public TeamService memberService;
+    public TextView name;
+    public TextView description;
+    public ListView list;
+
+    public Team team;
+    public ArrayList<Customer> members;
 
     private OnFragmentInteractionListener mListener;
 
@@ -46,7 +60,6 @@ public class TeamManagementTeamDetail extends Fragment {
      *
      * @return A new instance of fragment TeamManagementTeamDetail.
      */
-    // TODO: Rename and change types and number of parameters
     public static TeamManagementTeamDetail newInstance(int teamId) {
         TeamManagementTeamDetail fragment = new TeamManagementTeamDetail();
         Bundle args = new Bundle();
@@ -67,19 +80,33 @@ public class TeamManagementTeamDetail extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_team_management_team_detail, container, false);
-        final CustomerActivity activity =  (CustomerActivity) getActivity();
+        final CustomerActivity activity = (CustomerActivity) getActivity();
+        this.teamService = new TeamService(new DataService.Callback() {
+            @Override
+            public void callback(boolean status, Object obj) {
+                if(status){
+                    TeamManagementTeamDetail.this.team = (Team) obj;
+                    TeamManagementTeamDetail.this.reloadTeamDetail((Team) obj);
+                    TeamManagementTeamDetail.this.memberService.members(((Team) obj).id);
+                }
+            }
+        });
+        this.memberService = new TeamService(new UserService.CallbackList() {
+            @Override
+            public void callback(boolean status, ArrayList<?> obj) {
+                if(status){
+                    TeamManagementTeamDetail.this.members = (ArrayList<Customer>)obj;
+                    int id = TeamManagementTeamDetail.this.team.id;
+                    MemberListAdapter adapter = new MemberListAdapter(getActivity(), TeamManagementTeamDetail.this, (ArrayList<Customer>)obj, id);
+                    list.setAdapter(adapter);
+                }
+            }
+        });
 
         this.team = activity.getTeam(this.teamId);
-
-        TextView name = (TextView) v.findViewById(R.id.team_name);
-        name.setText(this.team.getName());
-
-        TextView description = (TextView) v.findViewById(R.id.team_description);
-        description.setText(this.team.getDescription());
-
-        ListView list = (ListView) v.findViewById(R.id.member_list);
-        MemberListAdapter adapter = new MemberListAdapter(getActivity(), this.team.getMembers(), this.teamId);
-        list.setAdapter(adapter);
+        this.name = (TextView) v.findViewById(R.id.team_name);
+        this.description = (TextView) v.findViewById(R.id.team_description);
+        this.list = (ListView) v.findViewById(R.id.member_list);
 
         Button button = (Button) v.findViewById(R.id.member_invite);
         button.setOnClickListener(new View.OnClickListener() {
@@ -87,10 +114,11 @@ public class TeamManagementTeamDetail extends Fragment {
                 activity.addChildFragment(TeamManagementTeamInvite.newInstance(teamId), TeamManagementTeamDetail.newInstance(teamId));
             }
         });
+
+        this.teamService.get(teamId);
         return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -127,5 +155,14 @@ public class TeamManagementTeamDetail extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    /* Update UI */
+    public void reloadMember(int id){
+        this.memberService.members(id);
+    }
+    public void reloadTeamDetail(Team team){
+        this.name.setText(team.getName());
+        this.description.setText(team.getDescription());
     }
 }

@@ -3,6 +3,7 @@ package com.th.footballmeeting.adapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,11 @@ import android.widget.TextView;
 import com.th.footballmeeting.activity.CustomerActivity;
 import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
-import com.th.footballmeeting.model.Member;
+import com.th.footballmeeting.fragment.team_management.TeamManagementTeamDetail;
+import com.th.footballmeeting.model.Customer;
+import com.th.footballmeeting.services.DataService;
+import com.th.footballmeeting.services.ValidationService;
+import com.th.footballmeeting.services.models.TeamService;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -23,15 +28,28 @@ import java.util.Random;
  */
 
 public class MemberListAdapter extends BaseAdapter {
-    private int teamId;
-    private Activity activity;
-    public ArrayList<Member> members;
-    private static LayoutInflater inflater = null;
+    public int teamId;
+    public Activity activity;
+    public ArrayList<Customer> members;
+    public ValidationService validator;
+    public TeamManagementTeamDetail fragment;
+    public TeamService service;
+    public static LayoutInflater inflater = null;
 
-    public MemberListAdapter(Activity activity, ArrayList<Member> members, int teamId) {
+    public MemberListAdapter(Activity activity, TeamManagementTeamDetail fragment, ArrayList<Customer> members, int teamId) {
         this.activity = activity;
         this.members = members;
         this.teamId = teamId;
+        this.fragment = fragment;
+        this.validator = new ValidationService((AppCompatActivity) activity);
+        this.service = new TeamService(new DataService.Callback() {
+            @Override
+            public void callback(boolean status, Object obj) {
+                if(status){
+                    MemberListAdapter.this.fragment.reloadMember(MemberListAdapter.this.teamId);
+                }
+            }
+        });
         inflater = (LayoutInflater) activity.getLayoutInflater();
     }
 
@@ -57,10 +75,7 @@ public class MemberListAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         final View vi = inflater.inflate(R.layout.member_list, parent, false);
-        ;
-//        if (convertView == null)
-//            vi =
-        final Member member = (Member) getItem(position);
+        final Customer member = (Customer) getItem(position);
         TextView name = (TextView) vi.findViewById(R.id.member_name);
         name.setText(member.getName());
 
@@ -77,10 +92,7 @@ public class MemberListAdapter extends BaseAdapter {
                         dialog.dismiss();
                     }
                 });
-
                 alert.show();
-
-
             }
         });
 
@@ -96,10 +108,7 @@ public class MemberListAdapter extends BaseAdapter {
                         dialog.dismiss();
                     }
                 });
-
                 alert.show();
-
-
             }
         });
 
@@ -113,13 +122,10 @@ public class MemberListAdapter extends BaseAdapter {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        members.remove(position);
-                        ((CustomerActivity) inflater.getContext()).removeTeamMember(teamId, position);
-                        notifyDataSetChanged();
+                        MemberListAdapter.this.service.removeMember(member.getId());
                         dialog.dismiss();
                     }
                 });
-
                 alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
 
                     @Override
@@ -127,16 +133,13 @@ public class MemberListAdapter extends BaseAdapter {
                         dialog.dismiss();
                     }
                 });
-
                 alert.show();
-
-
             }
         });
         return vi;
     }
 
-    public String generateAttendanceRecord(Member member) {
+    public String generateAttendanceRecord(Customer member) {
         Random r = new Random();
         int attend = r.nextInt(10 - 0);
         int absent = r.nextInt(10 - 0);
@@ -146,7 +149,7 @@ public class MemberListAdapter extends BaseAdapter {
         return attendance;
     }
 
-    public String generateCompetitionRecord(Member member) {
+    public String generateCompetitionRecord(Customer member) {
         Random r = new Random();
         int win = r.nextInt(10 - 0);
         int lose = r.nextInt(10 - 0);

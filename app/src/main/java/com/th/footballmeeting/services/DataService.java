@@ -20,16 +20,28 @@ import static android.content.ContentValues.TAG;
 
 public class DataService {
     public String url;
+    public Callback callback;
+    public CallbackList callbackList;
+
+    public interface Callback{
+        public void callback(boolean status, Object obj);
+    }
+
+    public interface CallbackList{
+        public void callback(boolean status, ArrayList<?> obj);
+    }
 
     public DataService() {
         this.url = "http://10.0.2.2/meeting/public/api/";
     }
-    /* User */
 
+    public DataService(Callback callback) {
+        this();
+        this.callback = callback;
+    }
 
-    /* Field */
-
-
-    /* Team */
-
+    public DataService(CallbackList callback) {
+        this();
+        this.callbackList = callback;
+    }
 }

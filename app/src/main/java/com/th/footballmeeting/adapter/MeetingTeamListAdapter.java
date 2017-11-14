@@ -13,7 +13,10 @@ import android.widget.TextView;
 import com.th.footballmeeting.activity.CustomerActivity;
 import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
+import com.th.footballmeeting.fragment.meeting.MeetingDetail;
 import com.th.footballmeeting.model.Team;
+import com.th.footballmeeting.services.DataService;
+import com.th.footballmeeting.services.models.MeetingService;
 
 import java.util.ArrayList;
 
@@ -22,15 +25,26 @@ import java.util.ArrayList;
  */
 
 public class MeetingTeamListAdapter extends BaseAdapter {
-    private int meetingId;
-    private Activity activity;
-    private ArrayList<Team> teams;
+    public int meetingId;
+    public Activity activity;
+    public ArrayList<Team> teams;
+    public MeetingDetail fragment;
+    public MeetingService service;
     private static LayoutInflater inflater = null;
 
-    public MeetingTeamListAdapter(Activity activity, ArrayList<Team> teams, int meetingId) {
+    public MeetingTeamListAdapter(Activity activity, MeetingDetail fragment, ArrayList<Team> teams, int meetingId) {
         this.activity = activity;
         this.teams = teams;
         this.meetingId = meetingId;
+        this.fragment = fragment;
+        this.service = new MeetingService(new DataService.Callback() {
+            @Override
+            public void callback(boolean status, Object obj) {
+                if(status){
+                    MeetingTeamListAdapter.this.fragment.reloadTeam(MeetingTeamListAdapter.this.meetingId);
+                }
+            }
+        });
         inflater = (LayoutInflater) activity.getLayoutInflater();
     }
 
@@ -54,7 +68,7 @@ public class MeetingTeamListAdapter extends BaseAdapter {
         final View vi = inflater.inflate(R.layout.meeting_team_list, parent, false);
 //        if (convertView == null)
 
-        Team team = (Team) getItem(position);
+        final Team team = (Team) getItem(position);
         TextView name = (TextView) vi.findViewById(R.id.team_name);
         name.setText(team.getName());
 
@@ -68,9 +82,7 @@ public class MeetingTeamListAdapter extends BaseAdapter {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        teams.remove(position);
-                        ((CustomerActivity) inflater.getContext()).removeMeetingTeam(meetingId, position);
-                        notifyDataSetChanged();
+                        MeetingTeamListAdapter.this.service.removeTeam(team.id);
                         dialog.dismiss();
                     }
                 });

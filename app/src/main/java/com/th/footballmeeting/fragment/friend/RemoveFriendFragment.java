@@ -12,11 +12,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.th.footballmeeting.MainApplication;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.activity.CustomerActivity;
 import com.th.footballmeeting.adapter.FriendAddListAdapter;
 import com.th.footballmeeting.adapter.FriendRemoveListAdapter;
-import com.th.footballmeeting.model.Member;
+import com.th.footballmeeting.model.Customer;
+import com.th.footballmeeting.services.models.UserService;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -30,15 +32,12 @@ import java.util.regex.Pattern;
  * create an instance of this fragment.
  */
 public class RemoveFriendFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    public ArrayList<Member> members;
+    public ArrayList<Customer> members;
+    static UserService service;
 
     private OnFragmentInteractionListener mListener;
 
-    public RemoveFriendFragment() {
-        // Required empty public constructor
-    }
+    public RemoveFriendFragment() {}
 
     /**
      * Use this factory method to create a new instance of
@@ -67,18 +66,27 @@ public class RemoveFriendFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_remove_friend, container, false);
         final CustomerActivity activity = (CustomerActivity) getActivity();
-        members = activity.getMemberList();
+        members = activity.getCustomerList();
 
         final ListView list = (ListView) v.findViewById(R.id.search_list);
-        FriendRemoveListAdapter adapter = new FriendRemoveListAdapter(getActivity(), members);
-        list.setAdapter(adapter);
+        service = new UserService(new UserService.CallbackList() {
+            @Override
+            public void callback(boolean status, ArrayList<?> obj) {
+                if(status){
+                    FriendRemoveListAdapter adapter = new FriendRemoveListAdapter(getActivity(), RemoveFriendFragment.this, (ArrayList<Customer>)obj);
+                    list.setAdapter(adapter);
+                }
+            }
+        });
+
+        service.friends(((MainApplication) getActivity().getApplication()).user.getId());
 
         final EditText search = (EditText) v.findViewById(R.id.search_input);
         search.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus) {
-                    ArrayList<Member> result = activity.searchMember(search.getText().toString());
+                    ArrayList<Customer> result = activity.searchCustomer(search.getText().toString());
 
                     if (!isValidText(search.getText().toString())) {
                         alertValidation("Username or name is incorrect format.\n" +
@@ -136,6 +144,10 @@ public class RemoveFriendFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+    /* Reload */
+    public void reloadFriend(){
+        service.friends(((MainApplication) getActivity().getApplication()).user.getId());
     }
 
     /* Validation */

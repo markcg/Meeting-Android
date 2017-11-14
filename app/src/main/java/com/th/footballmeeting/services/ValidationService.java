@@ -30,6 +30,19 @@ public class ValidationService {
         });
         alert.show();
     }
+    public void successValidation(String message) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this.activity);
+        alert.setTitle("Success");
+        alert.setMessage(message);
+        alert.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alert.show();
+    }
     public boolean compareText(String original, String comparer){
         if (original.equals(comparer)) {
             return true;

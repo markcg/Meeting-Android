@@ -51,13 +51,13 @@ public class MeetingListAdapter extends BaseAdapter {
         View vi = convertView;
         if (convertView == null)
             vi = inflater.inflate(R.layout.team_list, parent, false);
-        Meeting meeting = (Meeting) getItem(position);
+        final Meeting meeting = (Meeting) getItem(position);
 
         Button button = (Button) vi.findViewById(R.id.team_open);
         button.setText(meeting.getName());
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ((CustomerActivity)inflater.getContext()).addChildFragment(MeetingDetail.newInstance(position), MeetingList.newInstance());
+                ((CustomerActivity)inflater.getContext()).addChildFragment(MeetingDetail.newInstance(meeting.id), MeetingList.newInstance());
             }
         });
         return vi;

@@ -10,11 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.th.footballmeeting.MainApplication;
 import com.th.footballmeeting.activity.CustomerActivity;
 import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
+import com.th.footballmeeting.adapter.FriendAddListAdapter;
 import com.th.footballmeeting.adapter.TeamListAdapter;
+import com.th.footballmeeting.fragment.friend.AddFriendFragment;
+import com.th.footballmeeting.model.Customer;
 import com.th.footballmeeting.model.Team;
+import com.th.footballmeeting.services.models.UserService;
 
 import java.util.ArrayList;
 
@@ -30,16 +35,15 @@ public class TeamManagementTeamList extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String TEAMS = "teams";
-//    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private ArrayList<Team> teams;
+    public ArrayList<Team> teams;
+    public CustomerActivity activity;
+    public UserService service;
+    public ListView list;
 
     private OnFragmentInteractionListener mListener;
 
-    public TeamManagementTeamList() {
-        // Required empty public constructor
-    }
+    public TeamManagementTeamList() {}
 
     /**
      * Use this factory method to create a new instance of
@@ -47,7 +51,6 @@ public class TeamManagementTeamList extends Fragment {
      *
      * @return A new instance of fragment TeamManagementTeamList.
      */
-    // TODO: Rename and change types and number of parameters
     public static TeamManagementTeamList newInstance() {
         TeamManagementTeamList fragment = new TeamManagementTeamList();
         Bundle args = new Bundle();
@@ -68,14 +71,21 @@ public class TeamManagementTeamList extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_team_management_team_list, container, false);
-
         CustomerActivity activity =  (CustomerActivity) getActivity();
-        this.teams = activity.getTeams();
-        Log.d("Team", this.teams.toString());
-
-        ListView list = (ListView) v.findViewById(R.id.team_list_view);
-        TeamListAdapter adapter = new TeamListAdapter(getActivity(), this.teams);
-        list.setAdapter(adapter);
+        MainApplication app = (MainApplication) activity.getApplication();
+        Customer user = app.user;
+        this.list = (ListView) v.findViewById(R.id.team_list_view);
+        this.service = new UserService(new UserService.CallbackList() {
+            @Override
+            public void callback(boolean status, ArrayList<?> obj) {
+                if(status){
+                    TeamManagementTeamList.this.teams = (ArrayList<Team>)obj;
+                    TeamListAdapter adapter = new TeamListAdapter(getActivity(), (ArrayList<Team>)obj);
+                    TeamManagementTeamList.this.list.setAdapter(adapter);
+                }
+            }
+        });
+        this.service.teams(user.getId());
         return v;
     }
 

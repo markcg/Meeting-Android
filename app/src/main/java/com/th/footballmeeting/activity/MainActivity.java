@@ -28,8 +28,9 @@ import com.th.footballmeeting.fragment.team_management.TeamManagementCreateTeam;
 import com.th.footballmeeting.fragment.team_management.TeamManagementTeamDetail;
 import com.th.footballmeeting.fragment.team_management.TeamManagementTeamInvite;
 import com.th.footballmeeting.fragment.team_management.TeamManagementTeamList;
+import com.th.footballmeeting.model.Customer;
 import com.th.footballmeeting.model.Meeting;
-import com.th.footballmeeting.model.Member;
+import com.th.footballmeeting.model.Customer;
 import com.th.footballmeeting.model.Team;
 
 import java.util.ArrayList;
@@ -53,14 +54,14 @@ public class MainActivity extends AppCompatActivity
     private LinkedList<Fragment> history;
     private boolean isInFragment = false;
     private ArrayList<Team> teams = new ArrayList<Team>();
-    private ArrayList<Member> members = new ArrayList<Member>();
+    private ArrayList<Customer> members = new ArrayList<Customer>();
     private ArrayList<Meeting> meetings = new ArrayList<Meeting>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.teams = this.getTeamList();
-        this.members = this.getMemberList();
+        this.members = this.getCustomerList();
         this.history = new LinkedList<Fragment>();
 
         setContentView(R.layout.activity_main);
@@ -176,29 +177,29 @@ public class MainActivity extends AppCompatActivity
         fragmentManager.beginTransaction().replace(R.id.main_fragment_container, child).commit();
     }
 
-    /* Member */
-    public ArrayList<Member> getMemberList() {
-        ArrayList<Member> members = new ArrayList<Member>();
-        members.add(new Member("Lionel Messi"));
-        members.add(new Member("Cristiano Ronaldo"));
-        members.add(new Member("Xavi"));
-        members.add(new Member("Andres Iniesta"));
-        members.add(new Member("Zlatan Ibrahimovic"));
-        members.add(new Member("Radamel Falcao"));
-        members.add(new Member("Robin van Persie"));
-        members.add(new Member("Andrea Pirlo"));
-        members.add(new Member("Yaya Toure"));
-        members.add(new Member("Edinson Cavani"));
+    /* Customer */
+    public ArrayList<Customer> getCustomerList() {
+        ArrayList<Customer> members = new ArrayList<Customer>();
+        members.add(new Customer("Lionel Messi"));
+        members.add(new Customer("Cristiano Ronaldo"));
+        members.add(new Customer("Xavi"));
+        members.add(new Customer("Andres Iniesta"));
+        members.add(new Customer("Zlatan Ibrahimovic"));
+        members.add(new Customer("Radamel Falcao"));
+        members.add(new Customer("Robin van Persie"));
+        members.add(new Customer("Andrea Pirlo"));
+        members.add(new Customer("Yaya Toure"));
+        members.add(new Customer("Edinson Cavani"));
         return members;
     }
 
-    public void addMember(Member member) {
+    public void addCustomer(Customer member) {
         this.members.add(member);
     }
 
-    public ArrayList<Member> searchMember(String keyword) {
-        ArrayList<Member> members = new ArrayList<Member>();
-        for (Member member : getMemberList()) {
+    public ArrayList<Customer> searchCustomer(String keyword) {
+        ArrayList<Customer> members = new ArrayList<Customer>();
+        for (Customer member : getCustomerList()) {
             if(member.getName().contains(keyword)) {
                 members.add(member);
             }
@@ -224,25 +225,25 @@ public class MainActivity extends AppCompatActivity
         this.teams.add(team);
     }
 
-    public void addTeamMember(int teamId, Member member) {
+    public void addTeamCustomer(int teamId, Customer member) {
         Team team = this.teams.get(teamId);
-        team.addMember(member);
+        team.addCustomer(member);
         this.teams.set(teamId, team);
     }
 
-    public void removeTeamMember(int teamId, int memberId) {
+    public void removeTeamCustomer(int teamId, int memberId) {
         Team team = this.teams.get(teamId);
-        team.removeMember(memberId);
+        team.removeCustomer(memberId);
         this.teams.set(teamId, team);
     }
 
     public ArrayList<Team> getTeamList() {
         ArrayList<Team> teams = new ArrayList<Team>();
-        teams.add(new Team("Team 1", "First Team", this.getMemberList()));
-        teams.add(new Team("Team 2", "Second Team", this.getMemberList()));
-        teams.add(new Team("Team 3", "Third Team", this.getMemberList()));
-        teams.add(new Team("Team 4", "Fourth Team", this.getMemberList()));
-        teams.add(new Team("Team 5", "Fifth Team", this.getMemberList()));
+        teams.add(new Team("Team 1", "First Team", this.getCustomerList()));
+        teams.add(new Team("Team 2", "Second Team", this.getCustomerList()));
+        teams.add(new Team("Team 3", "Third Team", this.getCustomerList()));
+        teams.add(new Team("Team 4", "Fourth Team", this.getCustomerList()));
+        teams.add(new Team("Team 5", "Fifth Team", this.getCustomerList()));
         return teams;
     }
 

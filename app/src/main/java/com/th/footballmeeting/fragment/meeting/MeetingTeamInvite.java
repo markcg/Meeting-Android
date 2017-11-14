@@ -17,6 +17,8 @@ import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.adapter.TeamInviteListAdapter;
 import com.th.footballmeeting.model.Team;
+import com.th.footballmeeting.services.DataService;
+import com.th.footballmeeting.services.models.MeetingService;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -30,12 +32,13 @@ import java.util.regex.Pattern;
  * create an instance of this fragment.
  */
 public class MeetingTeamInvite extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String MEETINGID = "meetingId";
 
-    // TODO: Rename and change types of parameters
-    private int meetingId;
+    public int meetingId;
+    public ArrayList<Team> teams;
+    public ListView list;
+    public CustomerActivity activity;
+    public MeetingService service;
 
     private OnFragmentInteractionListener mListener;
 
@@ -49,7 +52,6 @@ public class MeetingTeamInvite extends Fragment {
      *
      * @return A new instance of fragment MeetingTeamInvite.
      */
-    // TODO: Rename and change types and number of parameters
     public static MeetingTeamInvite newInstance(int meetingId) {
         MeetingTeamInvite fragment = new MeetingTeamInvite();
         Bundle args = new Bundle();
@@ -71,36 +73,39 @@ public class MeetingTeamInvite extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_meeting_team_invite, container, false);
-        final ListView list = (ListView) v.findViewById(R.id.search_list);
-
-        final CustomerActivity activity =  (CustomerActivity) getActivity();
-        TeamInviteListAdapter adapter = new TeamInviteListAdapter(activity, activity.getTeams(), meetingId);
-        list.setAdapter(adapter);
+        this.list = (ListView) v.findViewById(R.id.search_list);
+        this.activity =  (CustomerActivity) getActivity();
+        this.service = new MeetingService(new MeetingService.CallbackList() {
+            @Override
+            public void callback(boolean status, ArrayList<?> obj) {
+                if(status){
+                    MeetingTeamInvite.this.teams = (ArrayList<Team>)obj;
+                    TeamInviteListAdapter adapter = new TeamInviteListAdapter(getActivity(), MeetingTeamInvite.this, (ArrayList<Team>)obj, MeetingTeamInvite.this.meetingId);
+                    MeetingTeamInvite.this.list.setAdapter(adapter);
+                }
+            }
+        });
 
         final EditText search = (EditText) v.findViewById(R.id.search_input);
         search.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus) {
-                    ArrayList<Team> result = activity.searchTeam(search.getText().toString());
+                    String keyword = search.getText().toString();
+                    int id = MeetingTeamInvite.this.meetingId;
 
                     if (!isValidText(search.getText().toString())) {
                         alertValidation("Username or name is incorrect format.\n" +
                                 "Please use only a-z, A-Z and 0-9");
                         return;
+                    }else {
+                        MeetingTeamInvite.this.service.searchNewTeam(keyword, id);
                     }
-
-                    if(result.size() <= 0){
-                        alertValidation("“Username or name is incorrect”");
-                        return;
-                    }
-
-                    ((TeamInviteListAdapter) list.getAdapter()).teams = result;
-                    ((TeamInviteListAdapter) list.getAdapter()).notifyDataSetChanged();
                 }
 
             }
         });
+        service.searchNewTeam("", meetingId);
         return v;
     }
 
@@ -141,6 +146,10 @@ public class MeetingTeamInvite extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+    /* UI Reload */
+    public void reloadTeam(){
+        service.searchNewTeam("", meetingId);
     }
 
     /* Validation */

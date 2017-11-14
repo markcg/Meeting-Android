@@ -10,11 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.th.footballmeeting.MainApplication;
 import com.th.footballmeeting.activity.CustomerActivity;
 import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.adapter.MeetingListAdapter;
+import com.th.footballmeeting.model.Customer;
 import com.th.footballmeeting.model.Meeting;
+import com.th.footballmeeting.services.models.MeetingService;
+import com.th.footballmeeting.services.models.UserService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,11 +32,9 @@ import java.util.Collections;
  * create an instance of this fragment.
  */
 public class MeetingList extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
-    // TODO: Rename and change types of parameters
-    private ArrayList<Meeting> meetings;
+    public ArrayList<Meeting> meetings;
+    public UserService service;
+    public ListView list;
 
     private OnFragmentInteractionListener mListener;
 
@@ -57,8 +59,6 @@ public class MeetingList extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
     }
 
     @Override
@@ -66,14 +66,23 @@ public class MeetingList extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_meeting_list, container, false);
         CustomerActivity activity =  (CustomerActivity) getActivity();
-        this.meetings = activity.getMeeting();
-        Log.d("Team", this.meetings.toString());
 
-        Collections.reverse(this.meetings);
-
-        ListView list = (ListView) v.findViewById(R.id.team_list_view);
-        MeetingListAdapter adapter = new MeetingListAdapter(getActivity(), this.meetings);
-        list.setAdapter(adapter);
+        MainApplication app = (MainApplication) activity.getApplication();
+        Customer user = app.user;
+        this.list = (ListView) v.findViewById(R.id.team_list_view);
+        this.service = new UserService(new UserService.CallbackList() {
+            @Override
+            public void callback(boolean status, ArrayList<?> obj) {
+                if(status){
+                    ArrayList<Meeting> meetings = (ArrayList<Meeting>)obj;
+                    Collections.reverse(meetings);
+                    MeetingList.this.meetings = meetings;
+                    MeetingListAdapter adapter = new MeetingListAdapter(getActivity(), meetings);
+                    MeetingList.this.list.setAdapter(adapter);
+                }
+            }
+        });
+        this.service.meetings(user.getId());
         return v;
     }
 
