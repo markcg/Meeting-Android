@@ -7,16 +7,16 @@ import java.util.Date;
  */
 
 public class Field {
-    int id;
-    String name;
-    String description;
+    public int id;
+    public String name;
+    public String description;
     String email;
-    String address;
-    String phone_number;
+    public String address;
+    public String phone_number;
     String username;
     String password;
-    String latitude;
-    String longitude;
+    public String latitude;
+    public String longitude;
     String confirm;
     String created_at;
     String updated_at;

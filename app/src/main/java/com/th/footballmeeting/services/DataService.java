@@ -22,6 +22,7 @@ public class DataService {
     public String url;
     public Callback callback;
     public CallbackList callbackList;
+    public CallbackBoolean callbackBool;
 
     public interface Callback{
         public void callback(boolean status, Object obj);
@@ -29,6 +30,10 @@ public class DataService {
 
     public interface CallbackList{
         public void callback(boolean status, ArrayList<?> obj);
+    }
+
+    public interface CallbackBoolean{
+        public void callback(boolean status);
     }
 
     public DataService() {
@@ -43,5 +48,10 @@ public class DataService {
     public DataService(CallbackList callback) {
         this();
         this.callbackList = callback;
+    }
+
+    public DataService(CallbackBoolean callback) {
+        this();
+        this.callbackBool = callback;
     }
 }

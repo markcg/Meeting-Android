@@ -9,6 +9,7 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.th.footballmeeting.model.Customer;
+import com.th.footballmeeting.model.Field;
 import com.th.footballmeeting.model.Meeting;
 import com.th.footballmeeting.model.Schedule;
 import com.th.footballmeeting.model.Team;
@@ -245,6 +246,39 @@ public class MeetingService extends DataService {
                                 schedules = gson.fromJson(raw , new TypeToken<ArrayList<Schedule>>(){}.getType());
                             }
                             callbackList.callback(status, schedules);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        // handle error
+                        Log.d(TAG, anError.toString());
+                    }
+                });
+    }
+    public void optimal(int meetingId){
+        AndroidNetworking.get(this.url + "meeting/get/optimize")
+                .addQueryParameter("id", Integer.toString(meetingId))
+                .setTag(this)
+                .setPriority(Priority.LOW)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // do anything with response
+                        Log.d(TAG, response.toString());
+
+                        try {
+                            boolean status = response.getBoolean("status");
+                            ArrayList<Field> fields = null;
+                            if(status){
+                                Gson gson = new Gson();
+                                String raw = response.getString("message");
+                                fields = gson.fromJson(raw , new TypeToken<ArrayList<Field>>(){}.getType());
+                            }
+                            callbackList.callback(status, fields);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

@@ -88,7 +88,9 @@
             android:id="@+id/meeting_invite"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Invite" />
+            android:background="@android:color/holo_green_light"
+            android:text="Invite"
+            android:textColor="@android:color/white" />
 
         <ListView
             android:id="@+id/meeting_team_list"
@@ -99,7 +101,9 @@
             android:id="@+id/meeting_optimal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Optimal" />
+            android:background="@android:color/holo_blue_light"
+            android:text="Optimal"
+            android:textColor="@android:color/white" />
 
     </LinearLayout>
 </FrameLayout>

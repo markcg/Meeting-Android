@@ -15,6 +15,8 @@ import com.th.footballmeeting.activity.CustomerActivity;
 import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.adapter.MeetingTeamListAdapter;
+import com.th.footballmeeting.fragment.field.FieldsFragment;
+import com.th.footballmeeting.model.Field;
 import com.th.footballmeeting.model.Meeting;
 import com.th.footballmeeting.model.Team;
 import com.th.footballmeeting.services.models.MeetingService;
@@ -36,6 +38,7 @@ public class MeetingDetail extends Fragment {
     public ArrayList<Team> teams;
     public MeetingService meetingService;
     public MeetingService teamService;
+    public MeetingService optimalService;
 
     public TextView name;
     public TextView date;
@@ -104,11 +107,28 @@ public class MeetingDetail extends Fragment {
                 }
             }
         });
+        this.optimalService = new MeetingService(new MeetingService.CallbackList() {
+            @Override
+            public void callback(boolean status, ArrayList<?> obj) {
+                if(status){
+                    ArrayList<Field> result = (ArrayList<Field>)obj;
+                    int id = MeetingDetail.this.meeting.id;
+                    activity.addChildFragment(FieldsFragment.newInstance(meeting, result), MeetingDetail.newInstance(meetingId));
+                }
+            }
+        });
 
         Button button = (Button) v.findViewById(R.id.meeting_invite);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 activity.addChildFragment(MeetingTeamInvite.newInstance(meetingId), MeetingDetail.newInstance(meetingId));
+            }
+        });
+
+        Button optimal = (Button) v.findViewById(R.id.meeting_optimal);
+        optimal.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                MeetingDetail.this.optimalService.optimal(meetingId);
             }
         });
         this.meetingService.get(meetingId);

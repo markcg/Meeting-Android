@@ -128,7 +128,7 @@ public class MeetingCreate extends Fragment {
                     return;
                 }
 
-                MeetingCreate.this.service.create(MeetingCreate.this.user.getId(), nameText, descText, dateText, startText, endText);
+                MeetingCreate.this.service.create(MeetingCreate.this.user.getId(), nameText, dateText, startText, endText, descText);
                 return;
             }
         });

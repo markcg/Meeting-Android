@@ -69,20 +69,20 @@ public class CustomerLoginActivity extends AppCompatActivity {
             }
         });
 
-        Button field = (Button) findViewById(R.id.field_login);
-        field.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(CustomerLoginActivity.this, FieldLoginActivity.class);
-                CustomerLoginActivity.this.startActivity(intent);
-            }
-        });
+//        Button field = (Button) findViewById(R.id.field_login);
+//        field.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(CustomerLoginActivity.this, FieldLoginActivity.class);
+//                CustomerLoginActivity.this.startActivity(intent);
+//            }
+//        });
 
         Button register = (Button) findViewById(R.id.register);
         register.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CustomerLoginActivity.this, RegisterActivity.class);
+                Intent intent = new Intent(CustomerLoginActivity.this, CustomerRegisterActivity.class);
                 CustomerLoginActivity.this.startActivity(intent);
             }
         });

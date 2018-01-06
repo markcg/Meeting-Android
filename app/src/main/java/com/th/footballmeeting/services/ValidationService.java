@@ -1,5 +1,6 @@
 package com.th.footballmeeting.services;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
@@ -11,9 +12,9 @@ import java.util.regex.Pattern;
  */
 
 public class ValidationService {
-    public AppCompatActivity activity;
+    public Activity activity;
 
-    public ValidationService(AppCompatActivity activity) {
+    public ValidationService(Activity activity) {
         this.activity = activity;
     }
 

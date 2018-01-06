@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:text="Customer Register"
         android:textAlignment="center"
+        android:textColor="@android:color/black"
         android:textSize="30sp"
         android:textStyle="bold" />
 
@@ -147,14 +148,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Confirm" />
+                    android:background="@android:color/holo_green_light"
+                    android:text="Confirm"
+                    android:textColor="@android:color/white" />
 
                 <Button
                     android:id="@+id/cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Cancel" />
+                    android:background="@android:color/holo_red_light"
+                    android:text="Cancel"
+                    android:textColor="@android:color/white" />
             </LinearLayout>
 
         </LinearLayout>

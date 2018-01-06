@@ -20,14 +20,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Add Friend" />
+            android:background="@android:color/holo_green_light"
+            android:text="Add Friend"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/friend_remove"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@android:color/holo_red_light"
             android:elevation="10dp"
-            android:text="Remove Friend" />
+            android:text="Remove Friend"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 </FrameLayout>

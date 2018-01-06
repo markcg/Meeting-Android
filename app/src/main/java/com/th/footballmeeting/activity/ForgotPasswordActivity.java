@@ -30,17 +30,17 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         this.validator = new ValidationService(this);
         this.username = (EditText) findViewById(R.id.username);
         this.email = (EditText) findViewById(R.id.email);
-        this.isCustomer = (RadioButton) findViewById(R.id.isCustomer);
-        this.isField = (RadioButton) findViewById(R.id.isField);
-
+//        this.isCustomer = (RadioButton) findViewById(R.id.isCustomer);
+//        this.isField = (RadioButton) findViewById(R.id.isField);
+//
         Button confirm = (Button) findViewById(R.id.confirm);
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String username = ForgotPasswordActivity.this.username.getText().toString();
                 String email = ForgotPasswordActivity.this.email.getText().toString();
-                boolean selectCustomer = ForgotPasswordActivity.this.isCustomer.isChecked();
-                boolean selectField = ForgotPasswordActivity.this.isField.isChecked();
+//                boolean selectCustomer = ForgotPasswordActivity.this.isCustomer.isChecked();
+//                boolean selectField = ForgotPasswordActivity.this.isField.isChecked();
 
                 userService = new UserService(new UserService.Callback() {
                     @Override
@@ -71,10 +71,10 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 if (allFilled(username, email)
                         && validateUsername(username)
                         && validateEmail(email)) {
-                    if (selectCustomer)
+//                    if (selectCustomer)
                         userService.forgotPassword(username, email);
-                    if (selectField)
-                        fieldService.forgotPassword(username, email);
+//                    if (selectField)
+//                        fieldService.forgotPassword(username, email);
                 }
             }
         });

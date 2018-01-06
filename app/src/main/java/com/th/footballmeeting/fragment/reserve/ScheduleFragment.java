@@ -9,16 +9,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.th.footballmeeting.MainApplication;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.activity.CustomerActivity;
-import com.th.footballmeeting.adapter.MeetingListAdapter;
 import com.th.footballmeeting.adapter.ScheduleListAdapter;
-import com.th.footballmeeting.model.Meeting;
+import com.th.footballmeeting.model.Field;
 import com.th.footballmeeting.model.Schedule;
+import com.th.footballmeeting.model.ScheduleSearch;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,7 +37,9 @@ public class ScheduleFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
     // TODO: Rename and change types of parameters
+    private Field field;
     private ArrayList<Schedule> schedules;
+    public String date;
     private OnFragmentInteractionListener mListener;
 
     public ScheduleFragment() {
@@ -47,10 +53,13 @@ public class ScheduleFragment extends Fragment {
      * @return A new instance of fragment ScheduleFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ScheduleFragment newInstance() {
+    public static ScheduleFragment newInstance(ScheduleSearch schedules, String date) {
         ScheduleFragment fragment = new ScheduleFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
+        fragment.schedules = schedules.schedules;
+        fragment.field = schedules.field;
+        fragment.date = date;
         return fragment;
     }
 
@@ -65,21 +74,25 @@ public class ScheduleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_schedule, container, false);
-        CustomerActivity activity =  (CustomerActivity) getActivity();
-        this.schedules = new ArrayList<Schedule>();
-        for(int i = 0; i < 16; i++){
+        MainApplication app = (MainApplication) getActivity().getApplication();
+        CustomerActivity activity = (CustomerActivity) getActivity();
+        ArrayList<Schedule> schedulesDisplay = new ArrayList<Schedule>();
+        for (int i = 0; i < 16; i++) {
             String time = String.format("%02d", i + 8).toString() + ":00";
             String status = "Available";
-            if(i == 4 || i == 10 || i == 11){
+            if(this.isNotAvailable(i + 8)){
                 status = "Not Available";
             }
-            this.schedules.add(new Schedule(time, status));
+            schedulesDisplay.add(new Schedule(time, i + 8, status));
         }
-        Log.d("Team", this.schedules.toString());
+        Log.d("Team", schedulesDisplay.toString());
 
         ListView list = (ListView) v.findViewById(R.id.schedule_list);
-        ScheduleListAdapter adapter = new ScheduleListAdapter(getActivity(), this.schedules);
+        ScheduleListAdapter adapter = new ScheduleListAdapter(getActivity(), schedulesDisplay, this.field, app.user, date);
         list.setAdapter(adapter);
+
+        TextView name = (TextView) v.findViewById(R.id.name);
+        name.setText(this.field.name);
         return v;
     }
 
@@ -105,6 +118,15 @@ public class ScheduleFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public boolean isNotAvailable(int time) {
+        Date date = new Date();
+        for (int i = 0; i < this.schedules.size(); i++) {
+            Schedule check = this.schedules.get(i);
+            if(check.getTime() == time) return true;
+        }
+        return false;
     }
 
     /**

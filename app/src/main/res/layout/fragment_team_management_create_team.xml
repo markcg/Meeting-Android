@@ -21,6 +21,7 @@
             android:layout_marginBottom="20dp"
             android:gravity="center_vertical|center_horizontal"
             android:text="Create Team"
+            android:textColor="@android:color/black"
             android:textSize="20dp" />
 
         <LinearLayout
@@ -80,14 +81,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Create" />
+                android:background="@android:color/holo_green_light"
+                android:text="Create"
+                android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/create_team_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Cancel" />
+                android:background="@android:color/holo_red_light"
+                android:text="Cancel"
+                android:textColor="@android:color/white" />
 
         </LinearLayout>
 
