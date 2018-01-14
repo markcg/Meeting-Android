@@ -32,11 +32,12 @@ public class FriendAddListAdapter extends BaseAdapter {
     public static int customerId;
     public ValidationService validator;
     public UserService service;
-    public RemoveFriendFragment fragment;
+    public AddFriendFragment fragment;
 
     public FriendAddListAdapter(Activity activity, AddFriendFragment fragment, ArrayList<Customer> friends, int customerId) {
         this.friends = friends;
         this.customerId = customerId;
+        this.fragment = fragment;
         this.validator = new ValidationService((AppCompatActivity) activity);
         this.service = new UserService(new UserService.Callback() {
             @Override

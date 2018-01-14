@@ -14,6 +14,7 @@ public class Team implements Parcelable {
     public int customer_id;
     public int team_id;
     public int meeting_id;
+    public int confirm;
     public String name;
     public String description;
     public ArrayList<Customer> members;

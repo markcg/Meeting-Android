@@ -42,7 +42,7 @@ public class FieldMapsActivity extends FragmentActivity implements OnMapReadyCal
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMinZoomPreference(22.0f);
+        mMap.setMinZoomPreference(14.0f);
         // Add a marker in Sydney and move the camera
         LatLng field = new LatLng(this.lat, this.lng);
         mMap.animateCamera(CameraUpdateFactory.zoomIn());

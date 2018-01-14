@@ -188,6 +188,33 @@ public class TeamService extends DataService {
                     }
                 });
     }
+    public void confirmMember(int relationId){
+        AndroidNetworking.get(this.url + "team/member/confirm")
+                .addQueryParameter("id", Integer.toString(relationId))
+                .setTag(this)
+                .setPriority(Priority.LOW)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // do anything with response
+                        Log.d(TAG, response.toString());
+
+                        try {
+                            boolean status = response.getBoolean("status");
+                            callback.callback(status, null);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        // handle error
+                        Log.d(TAG, anError.toString());
+                    }
+                });
+    }
     /* Collection */
     public void members(int teamId){
         AndroidNetworking.get(this.url + "team/get/members")

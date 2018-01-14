@@ -31,10 +31,12 @@ public class FriendRemoveListAdapter extends BaseAdapter {
     public UserService service;
     public ValidationService validator;
     public RemoveFriendFragment fragment;
+    public int mode;
 
-    public FriendRemoveListAdapter(Activity activity, RemoveFriendFragment fragment, ArrayList<Customer> friends) {
+    public FriendRemoveListAdapter(Activity activity, RemoveFriendFragment fragment, ArrayList<Customer> friends, int mode) {
         this.friends = friends;
         this.fragment = fragment;
+        this.mode = mode;
         this.validator = new ValidationService((AppCompatActivity) activity);
         inflater = (LayoutInflater) activity.getLayoutInflater();
     }
@@ -67,7 +69,11 @@ public class FriendRemoveListAdapter extends BaseAdapter {
             @Override
             public void callback(boolean status, Object obj) {
                 if(status){
-                    FriendRemoveListAdapter.this.validator.successValidation("Friend removed");
+                    if(FriendRemoveListAdapter.this.mode == 0){
+                        FriendRemoveListAdapter.this.validator.successValidation("Friend accepted");
+                    } else {
+                        FriendRemoveListAdapter.this.validator.successValidation("Friend removed");
+                    }
                     FriendRemoveListAdapter.this.fragment.reloadFriend();
                 } else {
                     FriendRemoveListAdapter.this.validator.alertValidation("Friend is not exist");
@@ -76,11 +82,22 @@ public class FriendRemoveListAdapter extends BaseAdapter {
         });
 
         Button button = (Button) vi.findViewById(R.id.remove);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                FriendRemoveListAdapter.this.service.removeFriend(member.getId());
-            }
-        });
+        if(mode == 0){
+            button.setText("+");
+            button.setBackgroundColor(vi.getContext().getResources().getColor(R.color.colorPrimary));
+            button.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    FriendRemoveListAdapter.this.service.acceptFriend(member.getId());
+                }
+            });
+        } else {
+            button.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    FriendRemoveListAdapter.this.service.removeFriend(member.getId());
+                }
+            });
+        }
+
         return vi;
     }
 }

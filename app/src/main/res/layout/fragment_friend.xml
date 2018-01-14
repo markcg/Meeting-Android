@@ -29,9 +29,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@android:color/holo_red_light"
+            android:background="@android:color/holo_blue_light"
             android:elevation="10dp"
-            android:text="Remove Friend"
+            android:text="Friend List"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/friend_request"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/darker_gray"
+            android:elevation="10dp"
+            android:text="Friend Request"
             android:textColor="@android:color/white" />
     </LinearLayout>
 </FrameLayout>

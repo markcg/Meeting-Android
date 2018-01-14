@@ -15,9 +15,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.th.footballmeeting.R;
+import com.th.footballmeeting.fragment.ChangePasswordFragment;
 import com.th.footballmeeting.fragment.FriendFragment;
 import com.th.footballmeeting.fragment.Home;
 import com.th.footballmeeting.fragment.MeetingFragment;
+import com.th.footballmeeting.fragment.ProfileFragment;
 import com.th.footballmeeting.fragment.ReserveFragment;
 import com.th.footballmeeting.fragment.TeamManagement;
 import com.th.footballmeeting.fragment.friend.AddFriendFragment;
@@ -123,14 +125,34 @@ public class CustomerActivity extends AppCompatActivity implements NavigationVie
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
+        Fragment fragment = null;
+        Class fragmentClass = null;
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
             Intent intent = new Intent(CustomerActivity.this, CustomerLoginActivity.class);
             CustomerActivity.this.startActivity(intent);
-            return true;
+        } else if(id == R.id.action_profile){
+            fragmentClass = ProfileFragment.class;
+        } else if(id == R.id.action_change_password){
+            fragmentClass = ChangePasswordFragment.class;
         }
 
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        this.history.push(fragment);
+        this.isInFragment = true;
+        // Insert the fragment by replacing any existing fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.main_fragment_container, fragment).commit();
+
+        // Highlight the selected item has been done by NavigationView
+        item.setChecked(true);
+        // Set action bar title
+        setTitle(item.getTitle());
         return super.onOptionsItemSelected(item);
     }
 

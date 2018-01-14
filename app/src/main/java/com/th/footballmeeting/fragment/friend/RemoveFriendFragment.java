@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 public class RemoveFriendFragment extends Fragment {
     public ArrayList<Customer> members;
     static UserService service;
-
+    public int mode;
     private OnFragmentInteractionListener mListener;
 
     public RemoveFriendFragment() {}
@@ -46,10 +46,11 @@ public class RemoveFriendFragment extends Fragment {
      * @return A new instance of fragment RemoveFriendFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static RemoveFriendFragment newInstance() {
+    public static RemoveFriendFragment newInstance(int mode) {
         RemoveFriendFragment fragment = new RemoveFriendFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
+        fragment.mode = mode;
         return fragment;
     }
 
@@ -73,14 +74,16 @@ public class RemoveFriendFragment extends Fragment {
             @Override
             public void callback(boolean status, ArrayList<?> obj) {
                 if(status){
-                    FriendRemoveListAdapter adapter = new FriendRemoveListAdapter(getActivity(), RemoveFriendFragment.this, (ArrayList<Customer>)obj);
+                    FriendRemoveListAdapter adapter = new FriendRemoveListAdapter(getActivity(), RemoveFriendFragment.this, (ArrayList<Customer>)obj, RemoveFriendFragment.this.mode);
                     list.setAdapter(adapter);
                 }
             }
         });
-
-        service.friends(((MainApplication) getActivity().getApplication()).user.getId());
-
+        if(this.mode == 1) {
+            service.friends(((MainApplication) getActivity().getApplication()).user.getId());
+        } else {
+            service.friendsRequest(((MainApplication) getActivity().getApplication()).user.getId());
+        }
         final EditText search = (EditText) v.findViewById(R.id.search_input);
         search.setOnFocusChangeListener(new View.OnFocusChangeListener() {
 

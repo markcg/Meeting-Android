@@ -46,7 +46,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     @Override
                     public void callback(boolean status, Object obj) {
                         if (status) {
-                            validator.successValidation("Your new password is sent to your email.");
+                            ForgotPasswordActivity.this.validator.successValidation("Your new password is sent to your email.");
                             Intent intent = new Intent(ForgotPasswordActivity.this, CustomerLoginActivity.class);
                             ForgotPasswordActivity.this.startActivity(intent);
                         } else {

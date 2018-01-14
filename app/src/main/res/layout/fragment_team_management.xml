@@ -33,5 +33,15 @@
             android:elevation="10dp"
             android:text="My Team"
             android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/team_invite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/darker_gray"
+            android:elevation="10dp"
+            android:text="Team Invite"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 </FrameLayout>

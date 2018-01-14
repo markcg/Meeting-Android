@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.th.footballmeeting.R;
@@ -74,8 +75,24 @@ public class FieldsListAdapter extends BaseAdapter {
         });
         TextView mIdView = (TextView) vi.findViewById(R.id.id);
         TextView mContentView = (TextView) vi.findViewById(R.id.content);
+        TextView title = (TextView) vi.findViewById(R.id.title);
+        TextView price = (TextView) vi.findViewById(R.id.price);
+        TextView description = (TextView) vi.findViewById(R.id.description);
+
+        LinearLayout nameSection = (LinearLayout) vi.findViewById(R.id.promotion_name_section);
+        LinearLayout descSection = (LinearLayout) vi.findViewById(R.id.promotion_desc_section);
+
+
         mIdView.setText(Integer.toString(position + 1));
         mContentView.setText(field.name);
+        if(field.promotion_name.equals("")){
+            nameSection.setVisibility(View.GONE);
+            descSection.setVisibility(View.GONE);
+        } else {
+            title.setText(field.promotion_name);
+            price.setText(field.promotion_price);
+            description.setText(field.promotion_description);
+        }
         return vi;
     }
 }

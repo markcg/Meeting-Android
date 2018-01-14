@@ -17,6 +17,9 @@ public class Field {
     String password;
     public String latitude;
     public String longitude;
+    public String promotion_name;
+    public String promotion_description;
+    public String promotion_price;
     String confirm;
     String created_at;
     String updated_at;

@@ -14,6 +14,7 @@ import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.fragment.team_management.TeamManagementCreateTeam;
 import com.th.footballmeeting.fragment.team_management.TeamManagementTeamList;
+import com.th.footballmeeting.fragment.team_management.TeamManagementTeamRequest;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -68,6 +69,13 @@ public class TeamManagement extends Fragment {
         detailButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 ((CustomerActivity) getActivity()).addChildFragment(TeamManagementTeamList.newInstance(), TeamManagement.newInstance());
+            }
+        });
+
+        Button invite = (Button) v.findViewById(R.id.team_invite);
+        invite.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                ((CustomerActivity) getActivity()).addChildFragment(TeamManagementTeamRequest.newInstance(), TeamManagement.newInstance());
             }
         });
 

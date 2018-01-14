@@ -1,4 +1,4 @@
-package com.th.footballmeeting.fragment;
+package com.th.footballmeeting.fragment.team_management;
 
 import android.content.Context;
 import android.net.Uri;
@@ -7,31 +7,39 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ListView;
 
+import com.th.footballmeeting.MainApplication;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.activity.CustomerActivity;
-import com.th.footballmeeting.fragment.friend.AddFriendFragment;
-import com.th.footballmeeting.fragment.friend.RemoveFriendFragment;
-import com.th.footballmeeting.fragment.team_management.TeamManagementCreateTeam;
-import com.th.footballmeeting.fragment.team_management.TeamManagementTeamList;
+import com.th.footballmeeting.adapter.TeamListAdapter;
+import com.th.footballmeeting.adapter.TeamRequestAdapter;
+import com.th.footballmeeting.model.Customer;
+import com.th.footballmeeting.model.Team;
+import com.th.footballmeeting.services.models.UserService;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link FriendFragment.OnFragmentInteractionListener} interface
+ * {@link TeamManagementTeamRequest.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link FriendFragment#newInstance} factory method to
+ * Use the {@link TeamManagementTeamRequest#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FriendFragment extends Fragment {
+public class TeamManagementTeamRequest extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    public ArrayList<Team> teams;
+    public CustomerActivity activity;
+    public UserService service;
+    public ListView list;
+    public Customer user;
 
-    // TODO: Rename and change types of parameters
     private OnFragmentInteractionListener mListener;
 
-    public FriendFragment() {
+    public TeamManagementTeamRequest() {
         // Required empty public constructor
     }
 
@@ -39,11 +47,11 @@ public class FriendFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment FriendFragment.
+     * @return A new instance of fragment TeamManagementTeamRequest.
      */
     // TODO: Rename and change types and number of parameters
-    public static FriendFragment newInstance() {
-        FriendFragment fragment = new FriendFragment();
+    public static TeamManagementTeamRequest newInstance() {
+        TeamManagementTeamRequest fragment = new TeamManagementTeamRequest();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -52,37 +60,33 @@ public class FriendFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_friend, container, false);
-
-        Button add = (Button) v.findViewById(R.id.friend_add);
-        add.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                ((CustomerActivity) getActivity()).addChildFragment(AddFriendFragment.newInstance(), FriendFragment.newInstance());
+        View v = inflater.inflate(R.layout.fragment_team_management_team_list, container, false);
+        CustomerActivity activity =  (CustomerActivity) getActivity();
+        MainApplication app = (MainApplication) activity.getApplication();
+        this.user = app.user;
+        this.list = (ListView) v.findViewById(R.id.team_list_view);
+        this.service = new UserService(new UserService.CallbackList() {
+            @Override
+            public void callback(boolean status, ArrayList<?> obj) {
+                if(status){
+                    TeamManagementTeamRequest.this.teams = (ArrayList<Team>)obj;
+                    TeamRequestAdapter adapter = new TeamRequestAdapter(getActivity(), TeamManagementTeamRequest.this, (ArrayList<Team>)obj);
+                    TeamManagementTeamRequest.this.list.setAdapter(adapter);
+                }
             }
         });
-
-        Button remove = (Button) v.findViewById(R.id.friend_remove);
-        remove.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                ((CustomerActivity) getActivity()).addChildFragment(RemoveFriendFragment.newInstance(1), FriendFragment.newInstance());
-            }
-        });
-
-        Button request = (Button) v.findViewById(R.id.friend_request);
-        request.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                ((CustomerActivity) getActivity()).addChildFragment(RemoveFriendFragment.newInstance(0), FriendFragment.newInstance());
-            }
-        });
+        this.service.teamsInvite(this.user.getId());
         return v;
+    }
+
+    public void reload(){
+        this.service.teamsInvite(this.user.getId());
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -95,12 +99,12 @@ public class FriendFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+//        if (context instanceof OnFragmentInteractionListener) {
+//            mListener = (OnFragmentInteractionListener) context;
+//        } else {
+//            throw new RuntimeException(context.toString()
+//                    + " must implement OnFragmentInteractionListener");
+//        }
     }
 
     @Override

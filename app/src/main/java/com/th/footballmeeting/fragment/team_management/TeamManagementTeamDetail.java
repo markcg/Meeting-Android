@@ -103,7 +103,7 @@ public class TeamManagementTeamDetail extends Fragment {
             }
         });
 
-        this.team = activity.getTeam(this.teamId);
+//        this.team = activity.getTeam(this.teamId);
         this.name = (TextView) v.findViewById(R.id.team_name);
         this.description = (TextView) v.findViewById(R.id.team_description);
         this.list = (ListView) v.findViewById(R.id.member_list);

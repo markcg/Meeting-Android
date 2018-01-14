@@ -8,5 +8,5 @@ public class MeetingTeam {
     int id;
     int meeting_id;
     int team_id;
-    int confirm;
+    public int confirm;
 }
