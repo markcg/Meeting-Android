@@ -76,7 +76,7 @@ public class AddFriendFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_add_friend, container, false);
         MainApplication application = (MainApplication) getActivity().getApplication();
-        customerId = application.user.getId();
+        this.customerId = application.user.getId();
 
         this.activity = (CustomerActivity) getActivity();
         this.list = (ListView) v.findViewById(R.id.search_list);
@@ -162,7 +162,7 @@ public class AddFriendFragment extends Fragment {
     }
     /* Reload */
     public void reloadFriend(){
-        service.searchNewFriend("", customerId);
+        service.searchNewFriend("", AddFriendFragment.this.customerId);
     }
 
     /* Validation */

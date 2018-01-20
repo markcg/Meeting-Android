@@ -24,10 +24,12 @@ public class TeamListAdapter extends BaseAdapter {
     private Activity activity;
     private ArrayList<Team> teams;
     private static LayoutInflater inflater = null;
+    public boolean isOwner;
 
-    public TeamListAdapter(Activity activity, ArrayList<Team> teams) {
+    public TeamListAdapter(Activity activity, ArrayList<Team> teams, boolean isOwner) {
         this.activity = activity;
         this.teams = teams;
+        this.isOwner = isOwner;
         inflater = (LayoutInflater) activity.getLayoutInflater();
     }
 
@@ -56,7 +58,7 @@ public class TeamListAdapter extends BaseAdapter {
         button.setText(team.getName());
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ((CustomerActivity)inflater.getContext()).addChildFragment(TeamManagementTeamDetail.newInstance(team.id), TeamManagementTeamList.newInstance());
+                ((CustomerActivity)inflater.getContext()).addChildFragment(TeamManagementTeamDetail.newInstance(team.id, TeamListAdapter.this.isOwner), TeamManagementTeamList.newInstance(isOwner));
             }
         });
         return vi;

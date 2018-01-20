@@ -44,6 +44,7 @@ public class TeamManagementTeamDetail extends Fragment {
     public TextView name;
     public TextView description;
     public ListView list;
+    public boolean isOwner;
 
     public Team team;
     public ArrayList<Customer> members;
@@ -65,6 +66,16 @@ public class TeamManagementTeamDetail extends Fragment {
         Bundle args = new Bundle();
         args.putInt(TEAMID, teamId);
         fragment.setArguments(args);
+        fragment.isOwner = false;
+        return fragment;
+    }
+
+    public static TeamManagementTeamDetail newInstance(int teamId, boolean isOwner) {
+        TeamManagementTeamDetail fragment = new TeamManagementTeamDetail();
+        Bundle args = new Bundle();
+        args.putInt(TEAMID, teamId);
+        fragment.setArguments(args);
+        fragment.isOwner = isOwner;
         return fragment;
     }
 
@@ -114,7 +125,9 @@ public class TeamManagementTeamDetail extends Fragment {
                 activity.addChildFragment(TeamManagementTeamInvite.newInstance(teamId), TeamManagementTeamDetail.newInstance(teamId));
             }
         });
-
+        if(!this.isOwner){
+            button.setVisibility(View.GONE);
+        }
         this.teamService.get(teamId);
         return v;
     }

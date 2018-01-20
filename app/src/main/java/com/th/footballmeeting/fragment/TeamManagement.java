@@ -68,7 +68,14 @@ public class TeamManagement extends Fragment {
         Button detailButton = (Button) v.findViewById(R.id.team_management_myteam);
         detailButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ((CustomerActivity) getActivity()).addChildFragment(TeamManagementTeamList.newInstance(), TeamManagement.newInstance());
+                ((CustomerActivity) getActivity()).addChildFragment(TeamManagementTeamList.newInstance(true), TeamManagement.newInstance());
+            }
+        });
+
+        Button memberButton = (Button) v.findViewById(R.id.team_management_member);
+        memberButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                ((CustomerActivity) getActivity()).addChildFragment(TeamManagementTeamList.newInstance(false), TeamManagement.newInstance());
             }
         });
 

@@ -14,6 +14,7 @@ public class Meeting {
     public String start;
     public String end;
     public String customer_id;
+    public String team_name;
     public ArrayList<Team> teams;
 
     public Meeting() {

@@ -23,6 +23,7 @@ public class DataService {
     public Callback callback;
     public CallbackList callbackList;
     public CallbackBoolean callbackBool;
+    public CallbackWithError callbackWithError;
 
     public interface Callback{
         public void callback(boolean status, Object obj);
@@ -34,6 +35,10 @@ public class DataService {
 
     public interface CallbackBoolean{
         public void callback(boolean status);
+    }
+
+    public interface CallbackWithError{
+        public void callback(boolean status, Object obj, String error);
     }
 
     public DataService() {
@@ -53,5 +58,10 @@ public class DataService {
     public DataService(CallbackBoolean callback) {
         this();
         this.callbackBool = callback;
+    }
+
+    public DataService(CallbackWithError callback) {
+        this();
+        this.callbackWithError = callback;
     }
 }

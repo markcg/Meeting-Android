@@ -78,7 +78,7 @@ public class TeamManagementCreateTeam extends Fragment {
             public void callback(boolean status, Object obj) {
                 if(status){
                     CustomerActivity activity = (CustomerActivity) getActivity();
-                    activity.addChildFragment(TeamManagementTeamList.newInstance());
+                    activity.addChildFragment(TeamManagementTeamList.newInstance(true));
                 }
             }
         });
@@ -130,7 +130,7 @@ public class TeamManagementCreateTeam extends Fragment {
         cancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 CustomerActivity activity = (CustomerActivity) getActivity();
-                activity.addChildFragment(TeamManagementTeamList.newInstance());
+                activity.addChildFragment(TeamManagementTeamList.newInstance(true));
                 return;
             }
         });

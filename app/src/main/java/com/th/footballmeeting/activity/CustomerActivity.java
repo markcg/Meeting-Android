@@ -131,7 +131,10 @@ public class CustomerActivity extends AppCompatActivity implements NavigationVie
         if (id == R.id.action_logout) {
             Intent intent = new Intent(CustomerActivity.this, CustomerLoginActivity.class);
             CustomerActivity.this.startActivity(intent);
-        } else if(id == R.id.action_profile){
+            return true;
+        }
+
+        if(id == R.id.action_profile){
             fragmentClass = ProfileFragment.class;
         } else if(id == R.id.action_change_password){
             fragmentClass = ChangePasswordFragment.class;

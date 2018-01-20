@@ -28,9 +28,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@android:color/darker_gray"
+            android:background="@android:color/holo_blue_light"
             android:elevation="10dp"
             android:text="Meeting List"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/meeting_invite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/darker_gray"
+            android:elevation="10dp"
+            android:text="Meeting Invite"
             android:textColor="@android:color/white" />
     </LinearLayout>
 

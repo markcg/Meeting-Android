@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.th.footballmeeting.activity.CustomerActivity;
@@ -69,37 +70,9 @@ public class MeetingTeamListAdapter extends BaseAdapter {
 //        if (convertView == null)
 
         final Team team = (Team) getItem(position);
+        LinearLayout layout = (LinearLayout) vi.findViewById(R.id.team_layout);
         TextView name = (TextView) vi.findViewById(R.id.team_name);
         name.setText(team.getName());
-
-        Button confirm = (Button) vi.findViewById(R.id.check);
-        if(team.confirm == 1){
-            confirm.setVisibility(View.INVISIBLE);
-        } else {
-            confirm.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    AlertDialog.Builder alert = new AlertDialog.Builder(vi.getContext());
-                    alert.setTitle("Confirm");
-                    alert.setMessage("Are you sure you want to confirm this team?");
-                    alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            MeetingTeamListAdapter.this.service.confirmTeam(team.id);
-                            dialog.dismiss();
-                        }
-                    });
-                    alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    alert.show();
-                }
-            });
-        }
 
         Button button = (Button) vi.findViewById(R.id.team_remove);
         button.setOnClickListener(new View.OnClickListener() {
@@ -125,6 +98,37 @@ public class MeetingTeamListAdapter extends BaseAdapter {
                 alert.show();
             }
         });
+
+        Button confirm = (Button) vi.findViewById(R.id.check);
+        if(team.confirm == 2){
+            confirm.setVisibility(View.INVISIBLE);
+        } else if(team.confirm == 1) {
+            confirm.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(vi.getContext());
+                    alert.setTitle("Confirm");
+                    alert.setMessage("Are you sure you want to confirm this team?");
+                    alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            MeetingTeamListAdapter.this.service.confirmTeam(team.id);
+                            dialog.dismiss();
+                        }
+                    });
+                    alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    alert.show();
+                }
+            });
+        } else {
+            layout.setVisibility(View.GONE);
+        }
         return vi;
     }
 }

@@ -40,6 +40,7 @@ public class TeamManagementTeamList extends Fragment {
     public CustomerActivity activity;
     public UserService service;
     public ListView list;
+    public boolean isOwner;
 
     private OnFragmentInteractionListener mListener;
 
@@ -51,10 +52,11 @@ public class TeamManagementTeamList extends Fragment {
      *
      * @return A new instance of fragment TeamManagementTeamList.
      */
-    public static TeamManagementTeamList newInstance() {
+    public static TeamManagementTeamList newInstance(boolean isOwner) {
         TeamManagementTeamList fragment = new TeamManagementTeamList();
         Bundle args = new Bundle();
         fragment.setArguments(args);
+        fragment.isOwner = isOwner;
         return fragment;
     }
 
@@ -71,7 +73,7 @@ public class TeamManagementTeamList extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_team_management_team_list, container, false);
-        CustomerActivity activity =  (CustomerActivity) getActivity();
+        this.activity =  (CustomerActivity) getActivity();
         MainApplication app = (MainApplication) activity.getApplication();
         Customer user = app.user;
         this.list = (ListView) v.findViewById(R.id.team_list_view);
@@ -80,12 +82,16 @@ public class TeamManagementTeamList extends Fragment {
             public void callback(boolean status, ArrayList<?> obj) {
                 if(status){
                     TeamManagementTeamList.this.teams = (ArrayList<Team>)obj;
-                    TeamListAdapter adapter = new TeamListAdapter(getActivity(), (ArrayList<Team>)obj);
+                    TeamListAdapter adapter = new TeamListAdapter(TeamManagementTeamList.this.activity, (ArrayList<Team>)obj, TeamManagementTeamList.this.isOwner);
                     TeamManagementTeamList.this.list.setAdapter(adapter);
                 }
             }
         });
-        this.service.teams(user.getId());
+        if(this.isOwner){
+            this.service.teams(user.getId());
+        } else {
+            this.service.teamsMember(user.getId());
+        }
         return v;
     }
 

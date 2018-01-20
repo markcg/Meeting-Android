@@ -141,15 +141,15 @@ public class CustomerRegisterActivity extends AppCompatActivity implements Googl
         String email = CustomerRegisterActivity.this.email.getText().toString();
         String phone = CustomerRegisterActivity.this.phone.getText().toString();
 
-        final UserService service = new UserService(new UserService.Callback() {
+        final UserService service = new UserService(new UserService.CallbackWithError() {
             @Override
-            public void callback(boolean status, Object obj) {
+            public void callback(boolean status, Object obj, String error) {
                 if (status) {
                     validator.successValidation("Register Successful, Please Login.");
                     Intent intent = new Intent(CustomerRegisterActivity.this, CustomerLoginActivity.class);
                     CustomerRegisterActivity.this.startActivity(intent);
                 } else {
-                    validator.alertValidation("Username or password is incorrect");
+                    validator.alertValidation(error);
                 }
             }
         });

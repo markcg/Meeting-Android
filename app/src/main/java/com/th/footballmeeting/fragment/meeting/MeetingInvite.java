@@ -1,4 +1,4 @@
-package com.th.footballmeeting.fragment;
+package com.th.footballmeeting.fragment.meeting;
 
 import android.content.Context;
 import android.net.Uri;
@@ -7,28 +7,37 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ListView;
 
-import com.th.footballmeeting.activity.CustomerActivity;
-import com.th.footballmeeting.activity.MainActivity;
+import com.th.footballmeeting.MainApplication;
 import com.th.footballmeeting.R;
-import com.th.footballmeeting.fragment.meeting.MeetingCreate;
-import com.th.footballmeeting.fragment.meeting.MeetingInvite;
-import com.th.footballmeeting.fragment.meeting.MeetingList;
+import com.th.footballmeeting.activity.CustomerActivity;
+import com.th.footballmeeting.adapter.MeetingInviteAdapter;
+import com.th.footballmeeting.adapter.MeetingListAdapter;
+import com.th.footballmeeting.model.Customer;
+import com.th.footballmeeting.model.Meeting;
+import com.th.footballmeeting.services.models.UserService;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MeetingFragment.OnFragmentInteractionListener} interface
+ * {@link MeetingInvite.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link MeetingFragment#newInstance} factory method to
+ * Use the {@link MeetingInvite#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MeetingFragment extends Fragment {
-
+public class MeetingInvite extends Fragment {
+    public ArrayList<Meeting> meetings;
+    public UserService service;
+    public ListView list;
+    public Customer user;
+    public CustomerActivity activity;
     private OnFragmentInteractionListener mListener;
 
-    public MeetingFragment() {
+    public MeetingInvite() {
         // Required empty public constructor
     }
 
@@ -36,11 +45,11 @@ public class MeetingFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment MeetingFragment.
+     * @return A new instance of fragment MeetingInvite.
      */
     // TODO: Rename and change types and number of parameters
-    public static MeetingFragment newInstance() {
-        MeetingFragment fragment = new MeetingFragment();
+    public static MeetingInvite newInstance() {
+        MeetingInvite fragment = new MeetingInvite();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -54,29 +63,25 @@ public class MeetingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_meeting, container, false);
+        View v = inflater.inflate(R.layout.fragment_meeting_invite, container, false);
+        this.activity =  (CustomerActivity) getActivity();
 
-        Button createButton = (Button) v.findViewById(R.id.meeting_create);
-        createButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                ((CustomerActivity) getActivity()).addChildFragment(MeetingCreate.newInstance(), MeetingFragment.newInstance());
+        MainApplication app = (MainApplication) activity.getApplication();
+        this.user = app.user;
+        this.list = (ListView) v.findViewById(R.id.invite_list);
+        this.service = new UserService(new UserService.CallbackList() {
+            @Override
+            public void callback(boolean status, ArrayList<?> obj) {
+                if(status){
+                    ArrayList<Meeting> meetings = (ArrayList<Meeting>)obj;
+                    Collections.reverse(meetings);
+                    MeetingInvite.this.meetings = meetings;
+                    MeetingInviteAdapter adapter = new MeetingInviteAdapter(MeetingInvite.this.activity, MeetingInvite.this, meetings);
+                    MeetingInvite.this.list.setAdapter(adapter);
+                }
             }
         });
-
-        Button detailButton = (Button) v.findViewById(R.id.meeting_list);
-        detailButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                ((CustomerActivity) getActivity()).addChildFragment(MeetingList.newInstance(), MeetingFragment.newInstance());
-            }
-        });
-
-        Button inviteButton = (Button) v.findViewById(R.id.meeting_invite);
-        inviteButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                ((CustomerActivity) getActivity()).addChildFragment(MeetingInvite.newInstance(), MeetingFragment.newInstance());
-            }
-        });
+        this.service.meetingsInvite(user.getId());
         return v;
     }
 
@@ -90,12 +95,6 @@ public class MeetingFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
@@ -104,6 +103,9 @@ public class MeetingFragment extends Fragment {
         mListener = null;
     }
 
+    public void reload(){
+        this.service.meetingsInvite(user.getId());
+    }
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

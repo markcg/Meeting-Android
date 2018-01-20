@@ -6,7 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.TextView;
 
+import com.google.android.gms.vision.text.Text;
 import com.th.footballmeeting.activity.CustomerActivity;
 import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
@@ -52,7 +54,6 @@ public class MeetingListAdapter extends BaseAdapter {
         if (convertView == null)
             vi = inflater.inflate(R.layout.team_list, parent, false);
         final Meeting meeting = (Meeting) getItem(position);
-
         Button button = (Button) vi.findViewById(R.id.team_open);
         button.setText(meeting.getName());
         button.setOnClickListener(new View.OnClickListener() {

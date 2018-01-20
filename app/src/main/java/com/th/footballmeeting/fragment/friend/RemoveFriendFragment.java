@@ -150,7 +150,12 @@ public class RemoveFriendFragment extends Fragment {
     }
     /* Reload */
     public void reloadFriend(){
-        service.friends(((MainApplication) getActivity().getApplication()).user.getId());
+        if(this.mode == 1) {
+            service.friends(((MainApplication) getActivity().getApplication()).user.getId());
+        } else {
+            service.friendsRequest(((MainApplication) getActivity().getApplication()).user.getId());
+        }
+//        service.friends(((MainApplication) getActivity().getApplication()).user.getId());
     }
 
     /* Validation */

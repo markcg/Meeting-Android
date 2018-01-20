@@ -34,6 +34,7 @@ public class MemberListAdapter extends BaseAdapter {
     public ValidationService validator;
     public TeamManagementTeamDetail fragment;
     public TeamService service;
+    public boolean isOwner;
     public static LayoutInflater inflater = null;
 
     public MemberListAdapter(Activity activity, TeamManagementTeamDetail fragment, ArrayList<Customer> members, int teamId) {
@@ -41,6 +42,7 @@ public class MemberListAdapter extends BaseAdapter {
         this.members = members;
         this.teamId = teamId;
         this.fragment = fragment;
+        this.isOwner = true;
         this.validator = new ValidationService((AppCompatActivity) activity);
         this.service = new TeamService(new DataService.Callback() {
             @Override
@@ -53,6 +55,23 @@ public class MemberListAdapter extends BaseAdapter {
         inflater = (LayoutInflater) activity.getLayoutInflater();
     }
 
+    public MemberListAdapter(Activity activity, TeamManagementTeamDetail fragment, ArrayList<Customer> members, int teamId, boolean isOwner) {
+        this.activity = activity;
+        this.members = members;
+        this.teamId = teamId;
+        this.fragment = fragment;
+        this.isOwner = isOwner;
+        this.validator = new ValidationService((AppCompatActivity) activity);
+        this.service = new TeamService(new DataService.Callback() {
+            @Override
+            public void callback(boolean status, Object obj) {
+                if(status){
+                    MemberListAdapter.this.fragment.reloadMember(MemberListAdapter.this.teamId);
+                }
+            }
+        });
+        inflater = (LayoutInflater) activity.getLayoutInflater();
+    }
     @Override
     public int getCount() {
         if (this.members != null) {
@@ -136,6 +155,9 @@ public class MemberListAdapter extends BaseAdapter {
                 alert.show();
             }
         });
+        if(!this.isOwner){
+            button.setVisibility(View.GONE);
+        }
         return vi;
     }
 

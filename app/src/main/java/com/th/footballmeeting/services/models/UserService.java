@@ -43,6 +43,10 @@ public class UserService extends DataService {
         super(callback);
     }
 
+    public UserService(CallbackWithError callback) {
+        super(callback);
+    }
+
     public void login(String username, String password) {
         AndroidNetworking.get(this.url + "customer/login")
                 .addQueryParameter("username", username)
@@ -105,13 +109,14 @@ public class UserService extends DataService {
 
                         try {
                             boolean status = response.getBoolean("status");
+                            String error = response.getString("error");
                             Customer customer = null;
                             if(status){
                                 Gson gson = new Gson();
                                 String raw = response.getString("message");
                                 customer = gson.fromJson(raw , Customer.class);
                             }
-                            callback.callback(status, customer);
+                            callbackWithError.callback(status, customer, error);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -471,8 +476,74 @@ public class UserService extends DataService {
                     }
                 });
     }
+    public void teamsMember(int customerId) {
+        AndroidNetworking.get(this.url + "customer/get/teams-member")
+                .addQueryParameter("id", Integer.toString(customerId))
+                .setTag(this)
+                .setPriority(Priority.LOW)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // do anything with response
+                        Log.d(TAG, response.toString());
+
+                        try {
+                            boolean status = response.getBoolean("status");
+                            ArrayList<Team> teams = null;
+                            if(status){
+                                Gson gson = new Gson();
+                                String raw = response.getString("message");
+                                teams = gson.fromJson(raw , new TypeToken<ArrayList<Team>>(){}.getType());
+                            }
+                            callbackList.callback(status, teams);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        // handle error
+                        Log.d(TAG, anError.toString());
+                    }
+                });
+    }
     public void meetings(int customerId) {
         AndroidNetworking.get(this.url + "customer/get/meetings")
+                .addQueryParameter("id", Integer.toString(customerId))
+                .setTag(this)
+                .setPriority(Priority.LOW)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // do anything with response
+                        Log.d(TAG, response.toString());
+
+                        try {
+                            boolean status = response.getBoolean("status");
+                            ArrayList<Meeting> meetings = null;
+                            if(status){
+                                Gson gson = new Gson();
+                                String raw = response.getString("message");
+                                meetings = gson.fromJson(raw , new TypeToken<ArrayList<Meeting>>(){}.getType());
+                            }
+                            callbackList.callback(status, meetings);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        // handle error
+                        Log.d(TAG, anError.toString());
+                    }
+                });
+    }
+    public void meetingsInvite(int customerId) {
+        AndroidNetworking.get(this.url + "customer/get/meetings-invite")
                 .addQueryParameter("id", Integer.toString(customerId))
                 .setTag(this)
                 .setPriority(Priority.LOW)

@@ -191,6 +191,33 @@ public class MeetingService extends DataService {
                     }
                 });
     }
+    public void acceptTeam(int relationId){
+        AndroidNetworking.get(this.url + "meeting/team/accept")
+                .addQueryParameter("id", Integer.toString(relationId))
+                .setTag(this)
+                .setPriority(Priority.LOW)
+                .build()
+                .getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // do anything with response
+                        Log.d(TAG, response.toString());
+
+                        try {
+                            boolean status = response.getBoolean("status");
+                            callback.callback(status, null);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                        // handle error
+                        Log.d(TAG, anError.toString());
+                    }
+                });
+    }
     public void confirmTeam(int relationId){
         AndroidNetworking.get(this.url + "meeting/team/confirm")
                 .addQueryParameter("id", Integer.toString(relationId))
