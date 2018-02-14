@@ -101,7 +101,7 @@ public class MeetingCreate extends Fragment {
                 }
 
                 if (!isTextShorterThan(nameText, 4)) {
-                    alertValidation("Please input 4 characters or more");
+                    alertValidation("Please input 4 characters or more in the name");
                     return;
                 }
 
@@ -112,19 +112,19 @@ public class MeetingCreate extends Fragment {
                 }
 
                 if (!isTextShorterThan(descText, 10)) {
-                    alertValidation("Please input 10 characters or more");
+                    alertValidation("Please input 10 characters or more in the description");
                     return;
                 }
 
                 if (!isValidTime(startText)) {
                     alertValidation("Start is incorrect format.\n" +
-                            "Please use inly 0-9 in HH:MM format");
+                            "Please use inly 0-9 in HH:MM format in the start date");
                     return;
                 }
 
                 if (!isValidTime(endText)) {
                     alertValidation("End is incorrect format.\n" +
-                            "Please use inly 0-9 in HH:MM format");
+                            "Please use inly 0-9 in HH:MM format in the end date");
                     return;
                 }
 

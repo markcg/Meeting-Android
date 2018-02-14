@@ -174,7 +174,7 @@ public class CustomerRegisterActivity extends AppCompatActivity implements Googl
                 || validator.isEmapty(name)
                 || validator.isEmapty(email)
                 || validator.isEmapty(phone)) {
-            validator.alertValidation("Please fill in all required text field");
+            validator.alertValidation("Please fill in all required fields");
             return false;
         }
         return true;
@@ -188,7 +188,7 @@ public class CustomerRegisterActivity extends AppCompatActivity implements Googl
         }
 
         if (!validator.isTextShorterThan(username, 4) || !validator.isTextLongerThan(username, 10)) {
-            validator.alertValidation("Please input 4-10 characters");
+            validator.alertValidation("Please input 4-10 characters in the username");
             return false;
         }
 
@@ -203,7 +203,7 @@ public class CustomerRegisterActivity extends AppCompatActivity implements Googl
         }
 
         if (!validator.isTextShorterThan(password, 4) || !validator.isTextLongerThan(password, 10)) {
-            validator.alertValidation("Please input 4-10 characters");
+            validator.alertValidation("Please input 4-10 characters in the password");
             return false;
         }
 
@@ -223,7 +223,7 @@ public class CustomerRegisterActivity extends AppCompatActivity implements Googl
         }
 
         if (!validator.isTextShorterThan(password, 4) || !validator.isTextLongerThan(password, 10)) {
-            validator.alertValidation("Please input 4-10 characters");
+            validator.alertValidation("Please input 4-10 characters in the re-password");
             return false;
         }
 
@@ -238,7 +238,7 @@ public class CustomerRegisterActivity extends AppCompatActivity implements Googl
         }
 
         if (!validator.isTextShorterThan(name, 4) || !validator.isTextLongerThan(name, 30)) {
-            validator.alertValidation("Please input 4-30 characters");
+            validator.alertValidation("Please input 4-30 characters in the name");
             return false;
         }
 
@@ -253,7 +253,7 @@ public class CustomerRegisterActivity extends AppCompatActivity implements Googl
         }
 
         if (!validator.isTextShorterThan(email, 10) || !validator.isTextLongerThan(email, 30)) {
-            validator.alertValidation("Please input 10-30 characters");
+            validator.alertValidation("Please input 10-30 characters in the email");
             return false;
         }
 
@@ -268,7 +268,7 @@ public class CustomerRegisterActivity extends AppCompatActivity implements Googl
         }
 
         if (!validator.isTextShorterThan(phone, 10) || !validator.isTextLongerThan(phone, 10)) {
-            validator.alertValidation("Please input 10 characters");
+            validator.alertValidation("Please input 10 characters in the phone number");
             return false;
         }
 

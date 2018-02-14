@@ -101,7 +101,7 @@ public class TeamManagementCreateTeam extends Fragment {
                 }
 
                 if (!isTextShorterThan(nameText, 4)) {
-                    alertValidation("Please input 4 characters or more");
+                    alertValidation("Please input 4 characters or more in the name");
                     return;
                 }
 
@@ -112,7 +112,7 @@ public class TeamManagementCreateTeam extends Fragment {
                 }
 
                 if (!isTextShorterThan(descText, 10)) {
-                    alertValidation("Please input 10 characters or more");
+                    alertValidation("Please input 10 characters or more in the description");
                     return;
                 }
 

@@ -105,7 +105,7 @@ public class CustomerLoginActivity extends AppCompatActivity {
         }
 
         if (!validator.isTextShorterThan(username, 4) || !validator.isTextLongerThan(username, 10)) {
-            validator.alertValidation("Please input 4-10 characters");
+            validator.alertValidation("Please input 4-10 characters in the username");
             return false;
         }
 
@@ -120,7 +120,7 @@ public class CustomerLoginActivity extends AppCompatActivity {
         }
 
         if (!validator.isTextShorterThan(password, 4) || !validator.isTextLongerThan(password, 10)) {
-            validator.alertValidation("Please input 4-10 characters");
+            validator.alertValidation("Please input 4-10 characters in the password");
             return false;
         }
 
