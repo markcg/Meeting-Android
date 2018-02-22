@@ -100,19 +100,19 @@ public class TeamManagementCreateTeam extends Fragment {
                     return;
                 }
 
-                if (!isTextShorterThan(nameText, 4)) {
-                    alertValidation("Please input 4 characters or more in the name");
+                if (!isTextShorterThan(nameText, 4) && !isTextLongerThan(descText, 20)) {
+                    alertValidation("Please input 4-20 characters in the team name");
                     return;
                 }
 
-                if (!isValidText(descText)) {
+                if (!isValidTextSpace(descText)) {
                     alertValidation("Team description is incorrect format.\n" +
-                            "Please use only a-z, A-Z and 0-9");
+                            "Please use only a-z, A-Z, 0-9 and space");
                     return;
                 }
 
-                if (!isTextShorterThan(descText, 10)) {
-                    alertValidation("Please input 10 characters or more in the description");
+                if (!isTextShorterThan(descText, 10) && !isTextLongerThan(descText, 250)) {
+                    alertValidation("Please input 10-250 characters in the team description");
                     return;
                 }
 
@@ -198,11 +198,20 @@ public class TeamManagementCreateTeam extends Fragment {
         }
         return false;
     }
-
+    public boolean isValidTextSpace(String name) {
+        Pattern p = Pattern.compile("[A-Za-z0-9 ]");
+        if (p.matcher(name).find()) {
+            return true;
+        }
+        return false;
+    }
     public boolean isTextShorterThan(String text, int length) {
         return text.length() >= length;
     }
 
+    public boolean isTextLongerThan(String text, int length) {
+        return text.length() <= length;
+    }
     public boolean isEmapty(String text) {
         return text.equals("");
     }

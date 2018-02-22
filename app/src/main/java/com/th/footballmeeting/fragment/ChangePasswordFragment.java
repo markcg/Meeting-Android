@@ -34,7 +34,7 @@ public class ChangePasswordFragment extends Fragment {
     public EditText newPassword;
     public EditText confirmPassword;
     public Customer user;
-    public ValidationService validation;
+    public ValidationService validator;
 
     public ChangePasswordFragment() {
         // Required empty public constructor
@@ -60,7 +60,7 @@ public class ChangePasswordFragment extends Fragment {
         CustomerActivity activity =  (CustomerActivity) getActivity();
 
         MainApplication app = (MainApplication) activity.getApplication();
-        this.validation = new ValidationService(activity);
+        this.validator = new ValidationService(activity);
         this.oldPassword = (EditText) v.findViewById(R.id.old_password);
         this.newPassword = (EditText) v.findViewById(R.id.new_password);
         this.confirmPassword = (EditText) v.findViewById(R.id.confirm_password);
@@ -70,10 +70,10 @@ public class ChangePasswordFragment extends Fragment {
             @Override
             public void callback(boolean status, Object obj) {
                 if(status){
-                    ChangePasswordFragment.this.validation.successValidation("Password changed.");
+                    ChangePasswordFragment.this.validator.successValidation("Password changed.");
 //                    ChangePasswordFragment.this.update((Customer) obj);
                 } else {
-                    ChangePasswordFragment.this.validation.alertValidation("Password incorrect.");
+                    ChangePasswordFragment.this.validator.alertValidation("Password incorrect.");
                 }
             }
         });
@@ -91,11 +91,15 @@ public class ChangePasswordFragment extends Fragment {
                         String oldPassword = ChangePasswordFragment.this.oldPassword.getText().toString();
                         String newPassword = ChangePasswordFragment.this.newPassword.getText().toString();
                         String confirmPassword = ChangePasswordFragment.this.confirmPassword.getText().toString();
-                        boolean valid = ChangePasswordFragment.this.validation.compareText(newPassword, confirmPassword);
-                        if(valid){
+                        boolean valid = ChangePasswordFragment.this.validator.compareText(newPassword, confirmPassword);
+                        if(valid
+                                && ChangePasswordFragment.this.allFilled(newPassword, oldPassword, confirmPassword)
+                                && ChangePasswordFragment.this.validatePassword(oldPassword)
+                                && ChangePasswordFragment.this.validateNewPassword(newPassword)
+                                && ChangePasswordFragment.this.validateRePassword(confirmPassword, newPassword)){
                             ChangePasswordFragment.this.service.changePassword(id, oldPassword, newPassword);
                         } else {
-                            ChangePasswordFragment.this.validation.alertValidation("Password and Confirm password is not match");
+                            ChangePasswordFragment.this.validator.alertValidation("Password and Confirm password is not match");
                         }
                         dialog.dismiss();
                     }
@@ -142,6 +146,64 @@ public class ChangePasswordFragment extends Fragment {
         oldPassword.setText(user.getName());
         newPassword.setText(user.getEmail());
         confirmPassword.setText(user.getPhone_number());
+    }
+    public boolean allFilled(String oldPassword, String newPassword, String rePassword) {
+        if (validator.isEmapty(oldPassword)
+                || validator.isEmapty(newPassword)
+                || validator.isEmapty(rePassword)) {
+            validator.alertValidation("Please fill in all required text field");
+            return false;
+        }
+        return true;
+    }
+    public boolean validatePassword(String password) {
+        if (!validator.isValidText(password)) {
+            validator.alertValidation("Old Password is incorrect format.\n" +
+                    "Please use only a-z, A-Z and 0-9");
+            return false;
+        }
+
+        if (!validator.isTextShorterThan(password, 4) || !validator.isTextLongerThan(password, 10)) {
+            validator.alertValidation("Please input 4-10 characters in the old password");
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean validateNewPassword(String newPassword) {
+        if (!validator.isValidText(newPassword)) {
+            validator.alertValidation("New password is incorrect format.\n" +
+                    "Please use only a-z, A-Z and 0-9");
+            return false;
+        }
+
+        if (!validator.isTextShorterThan(newPassword, 4) || !validator.isTextLongerThan(newPassword, 10)) {
+            validator.alertValidation("Please input 4-10 characters in the new password");
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean validateRePassword(String rePassword, String password) {
+        if (!validator.compareText(password, rePassword)) {
+            validator.alertValidation("Password are not match.");
+            return false;
+        }
+
+        if (!validator.isValidText(password)) {
+            validator.alertValidation("Confirm new password is incorrect format.\n" +
+                    "Please use only a-z, A-Z and 0-9");
+            return false;
+        }
+
+        if (!validator.isTextShorterThan(password, 4) || !validator.isTextLongerThan(password, 10)) {
+            validator.alertValidation("Please input 4-10 characters in the confirm new password");
+            return false;
+        }
+
+        return true;
     }
     /**
      * This interface must be implemented by activities that contain this

@@ -107,7 +107,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         }
 
         if (!validator.isTextShorterThan(username, 4) || !validator.isTextLongerThan(username, 10)) {
-            validator.alertValidation("Please input 4-10 characters");
+            validator.alertValidation("Please input 4-10 characters in the username");
             return false;
         }
 
@@ -122,7 +122,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         }
 
         if (!validator.isTextShorterThan(email, 10) || !validator.isTextLongerThan(email, 30)) {
-            validator.alertValidation("Please input 10-30 characters");
+            validator.alertValidation("Please input 10-30 characters in the email");
             return false;
         }
 

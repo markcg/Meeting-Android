@@ -13,11 +13,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.th.footballmeeting.MainApplication;
-import com.th.footballmeeting.activity.CustomerActivity;
-import com.th.footballmeeting.activity.MainActivity;
 import com.th.footballmeeting.R;
+import com.th.footballmeeting.activity.CustomerActivity;
 import com.th.footballmeeting.model.Customer;
-import com.th.footballmeeting.model.Meeting;
 import com.th.footballmeeting.services.DataService;
 import com.th.footballmeeting.services.models.MeetingService;
 
@@ -74,7 +72,7 @@ public class MeetingCreate extends Fragment {
             }
         });
 
-        final CustomerActivity activity =  (CustomerActivity) getActivity();
+        final CustomerActivity activity = (CustomerActivity) getActivity();
         final EditText name = (EditText) v.findViewById(R.id.meeting_name_input);
         final EditText desc = (EditText) v.findViewById(R.id.meeting_desc_input);
         final EditText date = (EditText) v.findViewById(R.id.meeting_date);
@@ -84,51 +82,61 @@ public class MeetingCreate extends Fragment {
         Button confirm = (Button) v.findViewById(R.id.create_meeting_done);
         confirm.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String nameText = name.getText().toString();
-                String descText = desc.getText().toString();
-                String dateText = date.getText().toString();
-                String startText = start.getText().toString();
-                String endText = end.getText().toString();
-                if(isEmapty(nameText) || isEmapty(descText) || isEmapty(startText) || isEmapty(endText)){
-                    alertValidation("Please fill in all required text field");
-                    return;
-                }
+                AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                alert.setTitle("Do you want to create meeting?");
+                alert.setPositiveButton("Close", new DialogInterface.OnClickListener() {
 
-                if (!isValidText(nameText)) {
-                    alertValidation("“Meeting name is incorrect format.\n" +
-                            "Please use only a-z, A-Z and 0-9");
-                    return;
-                }
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String nameText = name.getText().toString();
+                        String descText = desc.getText().toString();
+                        String dateText = date.getText().toString();
+                        String startText = start.getText().toString();
+                        String endText = end.getText().toString();
+                        if (isEmapty(nameText) || isEmapty(descText) || isEmapty(startText) || isEmapty(endText)) {
+                            alertValidation("Please fill in all required text field");
+                            return;
+                        }
 
-                if (!isTextShorterThan(nameText, 4)) {
-                    alertValidation("Please input 4 characters or more in the name");
-                    return;
-                }
+                        if (!isValidText(nameText)) {
+                            alertValidation("“Meeting name is incorrect format.\n" +
+                                    "Please use only a-z, A-Z and 0-9");
+                            return;
+                        }
 
-                if (!isValidText(descText)) {
-                    alertValidation("“Meeting description is incorrect format.\n" +
-                            "Please use only a-z, A-Z and 0-9");
-                    return;
-                }
+                        if (!isTextShorterThan(nameText, 4) && !isTextLongerThan(nameText, 15)) {
+                            alertValidation("Please input 4-15 characters in the meeting name");
+                            return;
+                        }
 
-                if (!isTextShorterThan(descText, 10)) {
-                    alertValidation("Please input 10 characters or more in the description");
-                    return;
-                }
+                        if (!isValidText(descText)) {
+                            alertValidation("“Meeting description is incorrect format.\n" +
+                                    "Please use only a-z, A-Z and 0-9");
+                            return;
+                        }
 
-                if (!isValidTime(startText)) {
-                    alertValidation("Start is incorrect format.\n" +
-                            "Please use inly 0-9 in HH:MM format in the start date");
-                    return;
-                }
+                        if (!isTextShorterThan(descText, 10) && !isTextLongerThan(nameText, 250)) {
+                            alertValidation("Please input 10-250 characters in the meeting description");
+                            return;
+                        }
 
-                if (!isValidTime(endText)) {
-                    alertValidation("End is incorrect format.\n" +
-                            "Please use inly 0-9 in HH:MM format in the end date");
-                    return;
-                }
+                        if (!isValidTime(startText)) {
+                            alertValidation("Start is incorrect format.\n" +
+                                    "Please use inly 0-9 in HH:MM format in the start date");
+                            return;
+                        }
 
-                MeetingCreate.this.service.create(MeetingCreate.this.user.getId(), nameText, dateText, startText, endText, descText);
+                        if (!isValidTime(endText)) {
+                            alertValidation("End is incorrect format.\n" +
+                                    "Please use inly 0-9 in HH:MM format in the end date");
+                            return;
+                        }
+
+                        MeetingCreate.this.service.create(MeetingCreate.this.user.getId(), nameText, dateText, startText, endText, descText);
+                        dialog.dismiss();
+                    }
+                });
+                alert.show();
                 return;
             }
         });
@@ -163,21 +171,6 @@ public class MeetingCreate extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 
     /* Validation */
@@ -215,7 +208,26 @@ public class MeetingCreate extends Fragment {
         return text.length() >= length;
     }
 
+    public boolean isTextLongerThan(String text, int length) {
+        return text.length() <= length;
+    }
+
     public boolean isEmapty(String text) {
         return text.equals("");
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
     }
 }

@@ -11,20 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 
 import com.th.footballmeeting.MainApplication;
 import com.th.footballmeeting.R;
 import com.th.footballmeeting.activity.CustomerActivity;
-import com.th.footballmeeting.adapter.MeetingListAdapter;
-import com.th.footballmeeting.adapter.MeetingTeamListAdapter;
-import com.th.footballmeeting.fragment.meeting.MeetingList;
 import com.th.footballmeeting.model.Customer;
-import com.th.footballmeeting.model.Meeting;
+import com.th.footballmeeting.services.ValidationService;
 import com.th.footballmeeting.services.models.UserService;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +35,8 @@ public class ProfileFragment extends Fragment {
     public EditText email;
     public EditText phone;
     public Customer user;
+    public ValidationService validator;
+
     private OnFragmentInteractionListener mListener;
 
     public ProfileFragment() {
@@ -71,7 +66,7 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
-        CustomerActivity activity =  (CustomerActivity) getActivity();
+        CustomerActivity activity = (CustomerActivity) getActivity();
 
         MainApplication app = (MainApplication) activity.getApplication();
         this.name = (EditText) v.findViewById(R.id.name);
@@ -82,8 +77,8 @@ public class ProfileFragment extends Fragment {
         this.service = new UserService(new UserService.Callback() {
             @Override
             public void callback(boolean status, Object obj) {
-                if(status){
-                    CustomerActivity activity =  (CustomerActivity) getActivity();
+                if (status) {
+                    CustomerActivity activity = (CustomerActivity) getActivity();
                     MainApplication app = (MainApplication) activity.getApplication();
                     app.user = (Customer) obj;
                     ProfileFragment.this.update((Customer) obj);
@@ -105,7 +100,12 @@ public class ProfileFragment extends Fragment {
                         String email = ProfileFragment.this.email.getText().toString();
                         String phone = ProfileFragment.this.phone.getText().toString();
 
-                        ProfileFragment.this.service.edit(id, name, email, phone);
+                        if (ProfileFragment.this.allFilled(name, email, phone)
+                                && ProfileFragment.this.validateEmail(email)
+                                && ProfileFragment.this.validateName(name)
+                                && ProfileFragment.this.validatePhone(name)) {
+                            ProfileFragment.this.service.edit(id, name, email, phone);
+                        }
                         dialog.dismiss();
                     }
                 });
@@ -147,11 +147,68 @@ public class ProfileFragment extends Fragment {
         mListener = null;
     }
 
-    public void update(Customer user){
+    public void update(Customer user) {
         name.setText(user.getName());
         email.setText(user.getEmail());
         phone.setText(user.getPhone_number());
     }
+
+    /* Validator */
+    public boolean allFilled(String name, String email, String phone) {
+        if (validator.isEmapty(name)
+                || validator.isEmapty(email)
+                || validator.isEmapty(phone)) {
+            validator.alertValidation("Please fill in all required text field");
+            return false;
+        }
+        return true;
+    }
+
+    public boolean validateName(String name) {
+        if (!validator.isValidText(name)) {
+            validator.alertValidation("Name is incorrect format.\n" +
+                    "Please use only a-z, A-Z and 0-9");
+            return false;
+        }
+
+        if (!validator.isTextShorterThan(name, 4) || !validator.isTextLongerThan(name, 30)) {
+            validator.alertValidation("Please input 4-30 characters in the name");
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean validateEmail(String email) {
+        if (!validator.isValidEmail(email)) {
+            validator.alertValidation("Email is incorrect format.\n" +
+                    "Please use correct email format");
+            return false;
+        }
+
+        if (!validator.isTextShorterThan(email, 10) || !validator.isTextLongerThan(email, 30)) {
+            validator.alertValidation("Please input 10-30 characters in the email");
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean validatePhone(String phone) {
+        if (!validator.isValidEmail(phone)) {
+            validator.alertValidation("Phone number is incorrect format.\n" +
+                    "Please use only 0-9");
+            return false;
+        }
+
+        if (!validator.isTextShorterThan(phone, 10) || !validator.isTextLongerThan(phone, 10)) {
+            validator.alertValidation("Please input 10 characters in the phone number");
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -166,4 +223,6 @@ public class ProfileFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+
 }
