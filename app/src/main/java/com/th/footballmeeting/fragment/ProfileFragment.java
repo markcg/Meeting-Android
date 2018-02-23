@@ -72,7 +72,7 @@ public class ProfileFragment extends Fragment {
         this.name = (EditText) v.findViewById(R.id.name);
         this.email = (EditText) v.findViewById(R.id.email);
         this.phone = (EditText) v.findViewById(R.id.phone);
-
+        this.validator = new ValidationService(activity);
         this.user = app.user;
         this.service = new UserService(new UserService.Callback() {
             @Override
@@ -103,7 +103,7 @@ public class ProfileFragment extends Fragment {
                         if (ProfileFragment.this.allFilled(name, email, phone)
                                 && ProfileFragment.this.validateEmail(email)
                                 && ProfileFragment.this.validateName(name)
-                                && ProfileFragment.this.validatePhone(name)) {
+                                && ProfileFragment.this.validatePhone(phone)) {
                             ProfileFragment.this.service.edit(id, name, email, phone);
                         }
                         dialog.dismiss();
@@ -165,7 +165,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public boolean validateName(String name) {
-        if (!validator.isValidText(name)) {
+        if (!validator.isValidTextWithSpace(name)) {
             validator.alertValidation("Name is incorrect format.\n" +
                     "Please use only a-z, A-Z and 0-9");
             return false;
@@ -195,7 +195,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public boolean validatePhone(String phone) {
-        if (!validator.isValidEmail(phone)) {
+        if (!validator.isValidNumber(phone)) {
             validator.alertValidation("Phone number is incorrect format.\n" +
                     "Please use only 0-9");
             return false;

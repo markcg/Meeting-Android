@@ -51,11 +51,18 @@ public class ValidationService {
         return false;
     }
     public boolean isValidText(String name) {
-        Pattern p = Pattern.compile("[A-Za-z0-9]");
+        Pattern p = Pattern.compile("[^A-Za-z0-9_]");
         if (p.matcher(name).find()) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
+    }
+    public boolean isValidTextWithSpace(String name) {
+        Pattern p = Pattern.compile("[^A-Za-z0-9_ ]");
+        if (p.matcher(name).find()) {
+            return false;
+        }
+        return true;
     }
 
     public boolean isValidEmail(String email) {
@@ -67,11 +74,11 @@ public class ValidationService {
     }
 
     public boolean isValidNumber(String number) {
-        Pattern p = Pattern.compile("[0-9]");
+        Pattern p = Pattern.compile("[^0-9]");
         if (p.matcher(number).find()) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     public boolean isValidTime(String name) {

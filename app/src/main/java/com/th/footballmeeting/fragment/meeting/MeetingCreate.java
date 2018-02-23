@@ -189,11 +189,11 @@ public class MeetingCreate extends Fragment {
     }
 
     public boolean isValidText(String name) {
-        Pattern p = Pattern.compile("[A-Za-z0-9]");
+        Pattern p = Pattern.compile("[^A-Za-z0-9]");
         if (p.matcher(name).find()) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     public boolean isValidTime(String name) {

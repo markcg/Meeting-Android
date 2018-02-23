@@ -192,18 +192,18 @@ public class TeamManagementCreateTeam extends Fragment {
     }
 
     public boolean isValidText(String name) {
-        Pattern p = Pattern.compile("[A-Za-z0-9]");
+        Pattern p = Pattern.compile("[^A-Za-z0-9]");
         if (p.matcher(name).find()) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
     public boolean isValidTextSpace(String name) {
-        Pattern p = Pattern.compile("[A-Za-z0-9 ]");
+        Pattern p = Pattern.compile("[^A-Za-z0-9 ]");
         if (p.matcher(name).find()) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
     public boolean isTextShorterThan(String text, int length) {
         return text.length() >= length;

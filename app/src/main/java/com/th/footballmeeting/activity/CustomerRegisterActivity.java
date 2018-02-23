@@ -26,13 +26,13 @@ import com.th.footballmeeting.services.models.UserService;
 
 public class CustomerRegisterActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
-    ValidationService validator;
-    EditText username;
-    EditText password;
-    EditText rePassword;
-    EditText name;
-    EditText email;
-    EditText phone;
+    public ValidationService validator;
+    public EditText username;
+    public EditText password;
+    public EditText rePassword;
+    public EditText name;
+    public EditText email;
+    public EditText phone;
 
     private GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
