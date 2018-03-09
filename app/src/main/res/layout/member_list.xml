@@ -21,14 +21,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:text="Attendance" />
+            android:text="Attendance"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/member_com_stat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:text="Competition" />
+            android:text="Competition"
+            android:visibility="gone" />
     </LinearLayout>
 
     <Button
